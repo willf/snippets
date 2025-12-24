@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A collection of code snippets and small one-page apps">
+    <title>Code Snippets Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .snippet-count {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .snippets-list {
+            list-style: none;
+        }
+        
+        .snippet-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+        
+        .snippet-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: #f1f3f5;
+        }
+        
+        .snippet-item h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+        
+        .snippet-item h2 a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .snippet-item h2 a:hover {
+            color: #764ba2;
+        }
+        
+        .snippet-description {
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .snippet-filename {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #999;
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #999;
+        }
+        
+        footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .snippet-item {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Code Snippets</h1>
+            <p>A collection of code snippets and small one-page apps</p>
+        </header>
+        
+        <div class="content">
+            <div class="snippet-count">
+                Found 1 snippet
+            </div>
+            
+            <ul class="snippets-list">
+                <li class="snippet-item">
+                    <h2><a href="kpl_modal.html">KPL Modal Example</a></h2>
+                    <p class="snippet-description">This is a simple modal dialog example that can be triggered with a button click.</p>
+                    <span class="snippet-filename">kpl_modal.html</span>
+                </li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Generated on 2025-12-24 21:21:22 | <a href="https://github.com/willf/snippets" target="_blank">View on GitHub</a></p>
+        </footer>
+    </div>
+</body>
+</html>
