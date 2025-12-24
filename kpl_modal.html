@@ -1,193 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KPL Modal Example</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KPL Login Demo</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+      /* --- 1. Base Styles & Colors --- */
+      :root {
+        --kpl-teal: #006983; /* Deep Teal */
+        --kpl-teal-hover: #004e60; /* Darker Teal */
+        --kpl-bg: #f4f4f4;
+        --white: #ffffff;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: var(--kpl-bg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      /* --- 2. The Login Card --- */
+      .login-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 350px;
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 0;
+        color: #333;
+      }
+      p {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensures padding doesn't break width */
+        font-size: 16px; /* Prevents zoom on iPhone */
+      }
+
+      /* --- 3. The Button with Spinner Logic --- */
+      .kpl-btn {
+        position: relative;
+        width: 100%;
+        background-color: var(--kpl-teal);
+        color: var(--white);
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .kpl-btn:hover {
+        background-color: var(--kpl-teal-hover);
+      }
+
+      /* The Spinner (Hidden by default) */
+      .loader {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin-top: -10px; /* Half height to center vertically */
+        margin-left: -10px; /* Half width to center horizontally */
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      /* LOADING STATE */
+      .kpl-btn.is-loading {
+        color: transparent; /* Hide text */
+        pointer-events: none; /* Disable clicks */
+      }
+
+      .kpl-btn.is-loading .loader {
+        display: block; /* Show spinner */
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        
-        .btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 30px;
-            border: 1px solid #888;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 500px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            animation: slideDown 0.3s;
-        }
-        
-        @keyframes slideDown {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            line-height: 20px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .close:hover,
-        .close:focus {
-            color: #000;
-        }
-        
-        .modal-header {
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
-        
-        .modal-header h2 {
-            margin: 0;
-            color: #333;
-        }
-        
-        .modal-body {
-            margin-bottom: 20px;
-        }
-        
-        .modal-footer {
-            text-align: right;
-            border-top: 1px solid #e0e0e0;
-            padding-top: 10px;
-        }
-        
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #007bff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .back-link:hover {
-            color: #0056b3;
-            text-decoration: underline;
-        }
+      }
+
+      /* Success Message */
+      .success-msg {
+        margin-top: 1rem;
+        color: green;
+        display: none;
+        font-weight: bold;
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>KPL Modal Example</h1>
-        <p>This is a simple modal dialog example that can be triggered with a button click.</p>
-        
-        <button class="btn" id="openModalBtn">Open Modal</button>
-        
-        <a href="index.html" class="back-link">← Back to Snippets</a>
+  </head>
+  <body>
+    <div class="login-card">
+      <h2>Sign In</h2>
+      <p>Enter your library card number below.</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <input type="text" placeholder="Username / Card #" required />
+        <input type="password" placeholder="PIN" required />
+
+        <button type="submit" id="submitBtn" class="kpl-btn">
+          <span class="btn-text">Log In</span>
+          <span class="loader"></span>
+        </button>
+      </form>
+
+      <div id="successMsg" class="success-msg">Login Successful!</div>
     </div>
-    
-    <!-- Modal -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h2>Modal Title</h2>
-            </div>
-            <div class="modal-body">
-                <p>This is a simple modal dialog example.</p>
-                <p>You can click the X button or click outside the modal to close it.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" id="closeModalBtn">Close</button>
-            </div>
-        </div>
-    </div>
-    
+
     <script>
-        // Get modal element
-        const modal = document.getElementById('myModal');
-        const openBtn = document.getElementById('openModalBtn');
-        const closeBtn = document.getElementById('closeModalBtn');
-        const closeX = document.getElementsByClassName('close')[0];
-        
-        // Open modal
-        openBtn.addEventListener('click', function() {
-            modal.style.display = 'block';
-        });
-        
-        // Close modal - X button
-        closeX.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-        
-        // Close modal - Close button
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-        
-        // Close modal - Click outside
-        window.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
+      function handleLogin(event) {
+        // Prevent the form from actually submitting and refreshing the page
+        event.preventDefault();
+
+        const btn = document.getElementById("submitBtn");
+        const successMsg = document.getElementById("successMsg");
+
+        // 1. Switch button to loading state
+        btn.classList.add("is-loading");
+        successMsg.style.display = "none";
+
+        // 2. Simulate a 2-second server wait
+        setTimeout(() => {
+          // 3. Remove loading state
+          btn.classList.remove("is-loading");
+
+          // Show success message
+          successMsg.style.display = "block";
+        }, 2000);
+      }
     </script>
-</body>
+  </body>
 </html>
