@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SheetData Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .loading-shimmer {
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-12">
+      <!-- Header -->
+      <header class="mb-10 text-center">
+        <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 mb-2">
+          SheetData Explorer
+        </h1>
+        <p class="text-slate-600">Visualizing live data from Google Sheets</p>
+      </header>
+
+      <!-- Input Section -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl mb-8">
+        <div class="flex flex-col md:flex-row gap-4">
+          <input
+            type="text"
+            id="sheetUrl"
+            placeholder="Paste Google Sheet URL here..."
+            class="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            value="https://docs.google.com/spreadsheets/d/1sn_kC0jS-Lvu2gsrMZjhoK2MmlE-l1ppA1PxTJYuJVE/edit?usp=sharing"
+          />
+          <button
+            onclick="fetchData()"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors shadow-lg shadow-blue-200"
+          >
+            Load Data
+          </button>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">
+          Note: The Google Sheet must be shared as "Anyone with the link can
+          view".
+        </p>
+      </div>
+
+      <!-- Status Messages -->
+      <div
+        id="status"
+        class="hidden mb-6 p-4 rounded-xl text-center font-medium"
+      ></div>
+
+      <!-- Data Display Area -->
+      <div id="resultContainer" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-bold text-slate-800">First 5 Rows Preview</h2>
+          <span
+            id="rowCount"
+            class="text-sm bg-slate-200 px-3 py-1 rounded-full text-slate-600 font-medium"
+          ></span>
+        </div>
+
+        <div
+          class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm"
+        >
+          <table class="w-full text-left border-collapse">
+            <thead
+              id="tableHeader"
+              class="bg-slate-50 border-b border-slate-200"
+            >
+              <!-- Headers will be injected here -->
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-slate-100">
+              <!-- Rows will be injected here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Skeleton Loading -->
+      <div id="skeleton" class="hidden space-y-4">
+        <div class="h-8 w-48 loading-shimmer rounded"></div>
+        <div class="h-64 w-full loading-shimmer rounded-2xl"></div>
+      </div>
+    </div>
+
+    <script>
+      async function fetchData() {
+        const urlInput = document.getElementById("sheetUrl").value.trim();
+        const statusDiv = document.getElementById("status");
+        const resultContainer = document.getElementById("resultContainer");
+        const skeleton = document.getElementById("skeleton");
+        const tableHeader = document.getElementById("tableHeader");
+        const tableBody = document.getElementById("tableBody");
+
+        if (!urlInput) {
+          showStatus("Please enter a valid Google Sheet URL.", "error");
+          return;
+        }
+
+        // Extract Sheet ID
+        const sheetIdMatch = urlInput.match(/\/d\/(.*?)(\/|$)/);
+        if (!sheetIdMatch) {
+          showStatus("Invalid Google Sheet URL format.", "error");
+          return;
+        }
+        const sheetId = sheetIdMatch[1];
+
+        // Show loading
+        hideStatus();
+        resultContainer.classList.add("hidden");
+        skeleton.classList.remove("hidden");
+
+        try {
+          // Use the visualization API to get CSV data
+          const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+
+          const response = await fetch(csvUrl);
+          if (!response.ok)
+            throw new Error(
+              "Failed to fetch data. Ensure the sheet is public.",
+            );
+
+          const text = await response.text();
+          const rows = parseCSV(text);
+
+          if (rows.length === 0) {
+            showStatus("The sheet appears to be empty.", "warning");
+            return;
+          }
+
+          renderTable(rows);
+
+          skeleton.classList.add("hidden");
+          resultContainer.classList.remove("hidden");
+        } catch (error) {
+          console.error(error);
+          skeleton.classList.add("hidden");
+          showStatus(
+            'Error: Could not retrieve data. Check if the sheet is shared publicly ("Anyone with the link can view").',
+            "error",
+          );
+        }
+      }
+
+      // Simple CSV parser that handles quotes
+      function parseCSV(csvText) {
+        const lines = [];
+        const rows = csvText.split(/\r?\n/);
+
+        for (let i = 0; i < rows.length; i++) {
+          // Regex to split CSV while respecting quotes
+          const row = rows[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+          if (row) {
+            lines.push(row.map((val) => val.replace(/^"|"$/g, "")));
+          }
+        }
+        return lines;
+      }
+
+      function renderTable(data) {
+        const header = data[0];
+        const rows = data.slice(1, 6); // Get first 5 data rows
+
+        document.getElementById("rowCount").textContent =
+          `Showing ${rows.length} of ${data.length - 1} rows`;
+
+        // Render Header
+        let headerHtml = "<tr>";
+        header.forEach((col) => {
+          headerHtml += `<th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">${col}</th>`;
+        });
+        headerHtml += "</tr>";
+        document.getElementById("tableHeader").innerHTML = headerHtml;
+
+        // Render Body
+        let bodyHtml = "";
+        rows.forEach((row) => {
+          bodyHtml += '<tr class="hover:bg-slate-50 transition-colors">';
+          header.forEach((_, index) => {
+            const cellValue = row[index] || "";
+            bodyHtml += `<td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">${cellValue}</td>`;
+          });
+          bodyHtml += "</tr>";
+        });
+        document.getElementById("tableBody").innerHTML = bodyHtml;
+      }
+
+      function showStatus(msg, type) {
+        const statusDiv = document.getElementById("status");
+        statusDiv.textContent = msg;
+        statusDiv.classList.remove(
+          "hidden",
+          "bg-red-100",
+          "text-red-700",
+          "bg-yellow-100",
+          "text-yellow-700",
+          "bg-green-100",
+          "text-green-700",
+        );
+
+        if (type === "error")
+          statusDiv.classList.add("bg-red-100", "text-red-700");
+        else if (type === "warning")
+          statusDiv.classList.add("bg-yellow-100", "text-yellow-700");
+        else statusDiv.classList.add("bg-green-100", "text-green-700");
+      }
+
+      function hideStatus() {
+        document.getElementById("status").classList.add("hidden");
+      }
+
+      // Initialize on load with the default URL
+      window.onload = fetchData;
+    </script>
+  </body>
+</html>
