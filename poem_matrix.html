@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Poem Network Visualizer</title>
+    <!-- Renaissance-inspired typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family:
+          "Georgia", "Adobe Garamond Pro", "Garamond", "Times New Roman",
+          "Book Antiqua", serif;
+        font-feature-settings:
+          "liga" 1,
+          "dlig" 1,
+          "kern" 1;
+        text-rendering: optimizeLegibility;
+        display: flex;
+        flex-direction: column;
+        background: #fafafa;
+        color: #333;
+      }
+
+      /* Input styles to match theme */
+      input[type="text"] {
+        padding: 6px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: "Crimson Text", serif;
+        font-size: 14px;
+        min-width: 200px;
+        background: #fff;
+      }
+
+      header {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 20px;
+        border-bottom: 1px solid #eee;
+        flex-wrap: wrap;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        z-index: 20;
+      }
+
+      #viz {
+        width: 100%;
+        height: calc(100vh - 140px);
+        background: #fafafa;
+        flex: 1;
+        overflow: auto;
+        position: relative;
+      }
+
+      .legend {
+        margin-left: auto;
+        display: inline-flex;
+        gap: 16px;
+        align-items: center;
+        font-size: 13px;
+      }
+
+      .key {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .tooltip {
+        position: fixed;
+        pointer-events: none;
+        background: rgba(20, 25, 30, 0.95);
+        color: #fff;
+        font-size: 13px;
+        padding: 10px 14px;
+        border-radius: 4px;
+        transform: translate(15px, 15px); /* Offset from mouse */
+        white-space: nowrap;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        line-height: 1.4;
+      }
+
+      .hero {
+        background:
+          linear-gradient(
+            135deg,
+            rgba(43, 140, 190, 0.95),
+            rgba(20, 50, 80, 0.9)
+          ),
+          url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImIiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0iIzMzMyIgZmlsbC1vcGFjaXR5PSIwLjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjYikiLz48L3N2Zz4=")
+            repeat;
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+        position: relative;
+        border-bottom: 3px solid #1a6b8f;
+        transition: all 0.4s ease;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIwLjUiIHN0cm9rZS1vcGFjaXR5PSIwLjE1Ii8+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMzAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIwLjMiIHN0cm9rZS1vcGFjaXR5PSIwLjEiLz48L3N2Zz4=")
+          repeat;
+        opacity: 0.15;
+        pointer-events: none;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+
+      .hero h1 {
+        font-family: "Cinzel", "Trajan Pro", "Optima", serif;
+        font-size: 2.2rem;
+        margin: 0 0 12px 0;
+        font-weight: 400;
+        letter-spacing: 2px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        text-transform: uppercase;
+      }
+
+      .hero h2 {
+        font-family: "Crimson Text", "Adobe Garamond Pro", "Garamond", serif;
+        font-size: 1.2rem;
+        margin: 0 0 20px 0;
+        font-weight: 400;
+        opacity: 0.9;
+        font-style: italic;
+        letter-spacing: 0.5px;
+      }
+
+      .hero-toggle {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        font-family: "Crimson Text", serif;
+        transition: all 0.3s ease;
+        z-index: 10;
+        backdrop-filter: blur(4px);
+      }
+
+      .hero-toggle:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.6);
+      }
+
+      .hero.collapsed {
+        padding: 10px 20px;
+        min-height: auto;
+      }
+
+      .hero.collapsed .hero-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero.collapsed .hero-content > *:not(h1) {
+        display: none;
+      }
+
+      .hero.collapsed .hero-content h1 {
+        font-size: 1.4rem;
+        margin: 0;
+      }
+
+      /* When hero is expanded, move toggle to bottom right */
+      .hero:not(.collapsed) .hero-toggle {
+        top: auto;
+        bottom: 15px;
+        right: 15px;
+      }
+
+      /* Link styling */
+      a {
+        color: #2b8cbe;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid transparent;
+      }
+
+      a:hover {
+        color: #1a6b8f;
+        border-bottom-color: #2b8cbe;
+      }
+
+      .hero a {
+        color: rgba(255, 255, 255, 0.95);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+      }
+      .hero a:hover {
+        color: white;
+        border-bottom-color: white;
+      }
+
+      /* Footer styling */
+      footer {
+        background: #fff;
+        border-top: 1px solid #eee;
+        padding: 12px 20px;
+        text-align: center;
+        font-size: 13px;
+        color: #888;
+        margin-top: auto;
+        flex-shrink: 0;
+        z-index: 10;
+      }
+
+      /* Heatmap specific styles */
+      .controls {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .control-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .control-group label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #555;
+        font-family: "Crimson Text", serif;
+      }
+
+      select {
+        padding: 4px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: "Crimson Text", serif;
+        background: white;
+        cursor: pointer;
+      }
+
+      select:hover {
+        border-color: #bbb;
+      }
+
+      button {
+        background: #2b8cbe;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-family: "Crimson Text", serif;
+        transition: background 0.2s;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      button:hover {
+        background: #1a6b8f;
+      }
+
+      button.secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+
+      button.secondary:hover {
+        background: #e0e0e0;
+      }
+
+      .status-indicator {
+        background: #f0f7fa;
+        color: #2b8cbe;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-style: italic;
+        border: 1px solid rgba(43, 140, 190, 0.2);
+        display: none; /* Hidden by default until hover */
+      }
+
+      /* Heatmap matrix styles */
+      .heatmap-container {
+        padding: 20px;
+        /* Using inline-block so the container shrinks to fit the SVG */
+        display: inline-block;
+        min-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .heatmap-labels {
+        font-size: 13px;
+        font-family: "Crimson Text", serif;
+        fill: #444;
+      }
+
+      .poem-label {
+        font-weight: 400;
+        cursor: default;
+      }
+
+      .poem-label:hover {
+        fill: #000;
+        font-weight: 600;
+      }
+
+      .source-label {
+        font-weight: 400;
+        cursor: default;
+      }
+
+      .source-label:hover {
+        fill: #000;
+        font-weight: 600;
+      }
+
+      .matrix-stats {
+        background: #fff;
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+        color: #555;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-value {
+        font-weight: 600;
+        color: #2b8cbe;
+        font-size: 16px;
+        font-family: "Cinzel", serif;
+      }
+
+      /* Loading State */
+      #loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 50;
+        backdrop-filter: blur(2px);
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #2b8cbe;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      #error-msg {
+        color: #c62828;
+        padding: 10px;
+        background: #ffebee;
+        border: 1px solid #ef9a9a;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero collapsed" id="heroSection">
+      <button class="hero-toggle" id="heroToggle" onclick="toggleHero()">
+        Show Info
+      </button>
+      <div class="hero-content">
+        <h1>Poem Network Visualizer</h1>
+        <h2>Connection Heatmap</h2>
+        <p>
+          This visualization reveals connection patterns between poems and
+          sources. Each cell represents a relationship, with color indicating a
+          presence. Use this tool to identify "outliers"—poems that appear in
+          unique sources—and "hubs"—sources that contain large collections of
+          poetry.
+        </p>
+        <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px">
+          <em
+            >Hover over cells to see details. Use the controls below to sort the
+            matrix and reveal clustering patterns.</em
+          >
+        </p>
+      </div>
+    </section>
+
+    <div class="matrix-stats" id="matrixStats">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-label">Status</span
+          ><span class="stat-value">Waiting for Data</span>
+        </div>
+      </div>
+    </div>
+
+    <header>
+      <div class="controls">
+        <div class="control-group">
+          <input
+            type="text"
+            id="sheetUrl"
+            placeholder="Google Sheet URL"
+            value="https://docs.google.com/spreadsheets/d/1sn_kC0jS-Lvu2gsrMZjhoK2MmlE-l1ppA1PxTJYuJVE/edit?usp=sharing"
+          />
+          <button onclick="fetchData()">Load Data</button>
+        </div>
+
+        <div
+          class="control-group"
+          style="
+            border-left: 1px solid #ddd;
+            padding-left: 12px;
+            margin-left: 4px;
+          "
+        >
+          <label for="sortPoems">Rows (Poems):</label>
+          <select id="sortPoems">
+            <option value="alphabetical">Alphabetical</option>
+            <option value="connections">Connection Count</option>
+            <option value="clustering" selected>Clustering (Overlap)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="sortSources">Cols (Sources):</label>
+          <select id="sortSources">
+            <option value="alphabetical">Alphabetical</option>
+            <option value="connections">Connection Count</option>
+            <option value="clustering" selected>Clustering (Overlap)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <button id="exportBtn" class="secondary">Export PNG</button>
+        </div>
+
+        <div id="statusIndicator" class="status-indicator">
+          Hover cells for details
+        </div>
+      </div>
+
+      <div class="legend">
+        <span class="key">
+          <span
+            style="
+              width: 12px;
+              height: 12px;
+              background: #f0f0f0;
+              border: 1px solid #e0e0e0;
+              display: inline-block;
+              border-radius: 2px;
+            "
+          ></span>
+          No connection
+        </span>
+        <span class="key">
+          <span
+            style="
+              width: 12px;
+              height: 12px;
+              background: #2b8cbe;
+              border: 1px solid #1a6b8f;
+              display: inline-block;
+              border-radius: 2px;
+            "
+          ></span>
+          Connected
+        </span>
+      </div>
+    </header>
+
+    <div id="error-msg"></div>
+
+    <div id="viz">
+      <div id="loading" class="hidden">
+        <div class="spinner"></div>
+      </div>
+      <div class="heatmap-container">
+        <div id="heatmapMatrix"></div>
+      </div>
+    </div>
+
+    <div id="tip" class="tooltip"></div>
+
+    <footer>
+      <div class="footer-content">
+        <p>
+          Visualization generated based on Google Sheet data. Designed with
+          Renaissance aesthetics.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Global variables
+      let POEM_TO_MSS = {}; // Key: Poem Name, Value: Array of Source Names
+      let poems = [];
+      let sources = [];
+      let connectionMatrix = [];
+      let currentPoemSort = "clustering";
+      let currentSourceSort = "clustering";
+      let rawData = [];
+
+      // --- Data Fetching Logic ---
+
+      async function fetchData() {
+        const urlInput = document.getElementById("sheetUrl").value.trim();
+        const loading = document.getElementById("loading");
+        const errorMsg = document.getElementById("error-msg");
+
+        if (!urlInput) {
+          showError("Please enter a valid Google Sheet URL.");
+          return;
+        }
+
+        const sheetIdMatch = urlInput.match(/\/d\/(.*?)(\/|$)/);
+        if (!sheetIdMatch) {
+          showError("Invalid Google Sheet URL format.");
+          return;
+        }
+
+        // Reset UI
+        errorMsg.style.display = "none";
+        loading.classList.remove("hidden");
+        loading.style.display = "flex";
+        document.getElementById("heatmapMatrix").innerHTML = "";
+
+        try {
+          const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetIdMatch[1]}/gviz/tq?tqx=out:csv`;
+          const response = await fetch(csvUrl);
+          if (!response.ok)
+            throw new Error("Network error. Check if sheet is public.");
+
+          const text = await response.text();
+          processCSV(text);
+
+          loading.style.display = "none";
+        } catch (error) {
+          console.error(error);
+          loading.style.display = "none";
+          showError(
+            'Error loading data. Ensure the Google Sheet is set to "Anyone with the link can view".',
+          );
+        }
+      }
+
+      function showError(msg) {
+        const el = document.getElementById("error-msg");
+        el.textContent = msg;
+        el.style.display = "block";
+      }
+
+      function processCSV(csvText) {
+        const lines = csvText.split(/\r?\n/);
+        const headers = parseCSVLine(lines[0]);
+
+        // Identify columns
+        const poemKey = headers.find((h) =>
+          h.toLowerCase().includes("first line"),
+        );
+        const sourceKey = headers.find((h) =>
+          h.toLowerCase().includes("short name"),
+        );
+
+        if (!poemKey || !sourceKey) {
+          showError(
+            `Columns not found. Need "First Line" and "Short name". Found: ${headers.join(", ")}`,
+          );
+          return;
+        }
+
+        // Build POEM_TO_MSS structure
+        POEM_TO_MSS = {};
+
+        for (let i = 1; i < lines.length; i++) {
+          if (!lines[i].trim()) continue;
+          const row = parseCSVLine(lines[i]);
+
+          // Map header index to row value
+          const pVal = row[headers.indexOf(poemKey)];
+          const sVal = row[headers.indexOf(sourceKey)];
+
+          if (pVal && sVal) {
+            const poemName = pVal.trim();
+            const sourceName = sVal.trim();
+
+            if (!POEM_TO_MSS[poemName]) {
+              POEM_TO_MSS[poemName] = [];
+            }
+            if (!POEM_TO_MSS[poemName].includes(sourceName)) {
+              POEM_TO_MSS[poemName].push(sourceName);
+            }
+          }
+        }
+
+        // Initialize visualization
+        initializeHeatmap();
+      }
+
+      // Helper to handle CSV quotes
+      function parseCSVLine(text) {
+        const ret = [];
+        let inQuote = false;
+        let buffer = "";
+        for (let i = 0; i < text.length; i++) {
+          const c = text[i];
+          if (c === '"') {
+            inQuote = !inQuote;
+          } else if (c === "," && !inQuote) {
+            ret.push(buffer.replace(/^"|"$/g, "").replace(/""/g, '"'));
+            buffer = "";
+          } else {
+            buffer += c;
+          }
+        }
+        ret.push(buffer.replace(/^"|"$/g, "").replace(/""/g, '"'));
+        return ret;
+      }
+
+      // --- Visualization Logic (Adapted from Reference) ---
+
+      function initializeHeatmap() {
+        if (Object.keys(POEM_TO_MSS).length === 0) return;
+        prepareData();
+        calculateStatistics();
+        drawHeatmap();
+      }
+
+      function prepareData() {
+        // Get all poems and sources
+        poems = Object.keys(POEM_TO_MSS);
+        // Flatten all source arrays and get unique values
+        sources = [...new Set(Object.values(POEM_TO_MSS).flat())];
+
+        // Sort based on current settings
+        sortData();
+
+        // Create connection matrix
+        connectionMatrix = poems.map((poem) =>
+          sources.map((source) => (POEM_TO_MSS[poem].includes(source) ? 1 : 0)),
+        );
+      }
+
+      function sortData() {
+        // Sort poems (Rows)
+        poems.sort((a, b) => {
+          switch (currentPoemSort) {
+            case "connections":
+              return POEM_TO_MSS[b].length - POEM_TO_MSS[a].length;
+            case "clustering":
+              return calculateClusteringScore(b) - calculateClusteringScore(a);
+            default: // alphabetical
+              return a.localeCompare(b);
+          }
+        });
+
+        // Sort sources (Cols)
+        sources.sort((a, b) => {
+          switch (currentSourceSort) {
+            case "connections":
+              const aConn = poems.filter((poem) =>
+                POEM_TO_MSS[poem].includes(a),
+              ).length;
+              const bConn = poems.filter((poem) =>
+                POEM_TO_MSS[poem].includes(b),
+              ).length;
+              return bConn - aConn;
+            case "clustering":
+              return (
+                calculateSourceClusteringScore(b) -
+                calculateSourceClusteringScore(a)
+              );
+            default: // alphabetical
+              return a.localeCompare(b);
+          }
+        });
+      }
+
+      function calculateClusteringScore(poem) {
+        // Score based on how many OTHER poems share sources with this poem
+        // This pushes poems that appear in "popular" manuscripts together
+        const poemMss = POEM_TO_MSS[poem];
+        let totalOverlap = 0;
+
+        // Sampling for performance on large datasets:
+        // Instead of checking every other poem, we can just sum the 'popularity' of its sources
+        // A poem with sources that appear often is 'highly clustered'
+
+        // Accurate O(N^2) approach (fine for < 1000 items)
+        poems.forEach((otherPoem) => {
+          if (otherPoem !== poem) {
+            const otherMss = POEM_TO_MSS[otherPoem];
+            const overlap = poemMss.filter((ms) =>
+              otherMss.includes(ms),
+            ).length;
+            totalOverlap += overlap;
+          }
+        });
+
+        return totalOverlap;
+      }
+
+      function calculateSourceClusteringScore(source) {
+        // Score based on how many poems in this source appear in other sources
+        const sourcePoems = poems.filter((poem) =>
+          POEM_TO_MSS[poem].includes(source),
+        );
+        let totalOverlap = 0;
+
+        // Simplified heuristic: sum of connections of all poems in this source
+        // (Heavier sources with well-connected poems float to top)
+        sourcePoems.forEach((p) => {
+          totalOverlap += POEM_TO_MSS[p].length;
+        });
+
+        return totalOverlap;
+      }
+
+      function calculateStatistics() {
+        const totalCells = poems.length * sources.length;
+        const totalConnections = connectionMatrix
+          .flat()
+          .reduce((sum, val) => sum + val, 0);
+        const density = ((totalConnections / totalCells) * 100).toFixed(1);
+
+        const poemConnectionCounts = poems.map(
+          (poem) => POEM_TO_MSS[poem].length,
+        );
+        const sourceConnectionCounts = sources.map(
+          (source) =>
+            poems.filter((poem) => POEM_TO_MSS[poem].includes(source)).length,
+        );
+
+        const avgPoemConnections = (
+          poemConnectionCounts.reduce((sum, val) => sum + val, 0) / poems.length
+        ).toFixed(1);
+        const avgSourceConnections = (
+          sourceConnectionCounts.reduce((sum, val) => sum + val, 0) /
+          sources.length
+        ).toFixed(1);
+
+        const maxPoemConnections = Math.max(...poemConnectionCounts);
+        const maxSourceConnections = Math.max(...sourceConnectionCounts);
+
+        const mostConnectedPoem =
+          poems[poemConnectionCounts.indexOf(maxPoemConnections)];
+        const mostConnectedSource =
+          sources[sourceConnectionCounts.indexOf(maxSourceConnections)];
+
+        const statsHtml = `
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Matrix Size</span>
+              <span class="stat-value">${poems.length} × ${sources.length}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Connections</span>
+              <span class="stat-value">${totalConnections}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Density</span>
+              <span class="stat-value">${density}%</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Avg. Sources/Poem</span>
+              <span class="stat-value">${avgPoemConnections}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Avg. Poems/Source</span>
+              <span class="stat-value">${avgSourceConnections}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Top Poem</span>
+              <span class="stat-value" title="${mostConnectedPoem}">${truncateText(mostConnectedPoem, 20)}</span>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("matrixStats").innerHTML = statsHtml;
+      }
+
+      function drawHeatmap() {
+        const container = document.getElementById("heatmapMatrix");
+        container.innerHTML = "";
+
+        // Dimensions
+        const cellSize = 18;
+        const labelWidth = 350; // Space for Poem titles
+        const topLabelHeight = 140; // Space for angled Source titles
+
+        const width = labelWidth + sources.length * cellSize + 50;
+        const height = topLabelHeight + poems.length * cellSize + 50;
+
+        const svg = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg",
+        );
+        svg.setAttribute("width", width);
+        svg.setAttribute("height", height);
+        svg.style.background = "white";
+        // svg.style.border = "1px solid #eee";
+        container.appendChild(svg);
+
+        // 1. Draw Source Labels (X-axis, Top)
+        // We draw these first or last? SVG z-order is painter's algorithm.
+
+        sources.forEach((source, i) => {
+          const text = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text",
+          );
+          const x = labelWidth + i * cellSize + cellSize / 2;
+          const y = topLabelHeight - 10;
+
+          text.setAttribute("x", x);
+          text.setAttribute("y", y);
+          text.setAttribute("class", "heatmap-labels source-label");
+          text.setAttribute("text-anchor", "start");
+          // Rotate 45 degrees
+          text.setAttribute("transform", `rotate(-45, ${x}, ${y})`);
+          text.textContent = truncateText(source, 20);
+
+          // Tooltip for full name
+          const title = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "title",
+          );
+          title.textContent = source;
+          text.appendChild(title);
+
+          svg.appendChild(text);
+        });
+
+        // 2. Draw Poem Labels (Y-axis, Left)
+        poems.forEach((poem, i) => {
+          const text = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text",
+          );
+          text.setAttribute("x", labelWidth - 10);
+          text.setAttribute(
+            "y",
+            topLabelHeight + i * cellSize + cellSize / 1.5,
+          );
+          text.setAttribute("class", "heatmap-labels poem-label");
+          text.setAttribute("text-anchor", "end");
+          text.textContent = truncateText(poem, 45);
+
+          const title = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "title",
+          );
+          title.textContent = poem;
+          text.appendChild(title);
+
+          svg.appendChild(text);
+        });
+
+        // 3. Draw Grid/Cells
+        poems.forEach((poem, i) => {
+          sources.forEach((source, j) => {
+            const isConnected = connectionMatrix[i][j];
+            const rect = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "rect",
+            );
+
+            rect.setAttribute("x", labelWidth + j * cellSize);
+            rect.setAttribute("y", topLabelHeight + i * cellSize);
+            rect.setAttribute("width", cellSize - 1);
+            rect.setAttribute("height", cellSize - 1);
+            rect.setAttribute("rx", 2); // rounded corners small
+
+            // Color logic
+            rect.setAttribute("fill", isConnected ? "#2b8cbe" : "#f4f4f4");
+
+            // Interaction styles
+            rect.style.cursor = "pointer";
+            rect.style.transition = "fill 0.2s";
+
+            // Add hover effects
+            rect.addEventListener("mouseenter", (e) => {
+              e.target.setAttribute(
+                "fill",
+                isConnected ? "#1a6b8f" : "#e0e0e0",
+              );
+              showCellTooltip(e, poem, source, isConnected);
+            });
+
+            rect.addEventListener("mousemove", (e) => moveCellTooltip(e));
+
+            rect.addEventListener("mouseleave", (e) => {
+              e.target.setAttribute(
+                "fill",
+                isConnected ? "#2b8cbe" : "#f4f4f4",
+              );
+              hideCellTooltip();
+            });
+
+            svg.appendChild(rect);
+          });
+        });
+      }
+
+      function truncateText(text, maxLength) {
+        if (!text) return "";
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength - 3) + "...";
+      }
+
+      // --- Interaction ---
+
+      function showCellTooltip(event, poem, source, isConnected) {
+        const tooltip = document.getElementById("tip");
+        const status = isConnected
+          ? "<span style='color:#4fc3f7'>Connected</span>"
+          : "<span style='color:#bbb'>No connection</span>";
+
+        // Calculate context stats
+        const poemTotal = POEM_TO_MSS[poem].length;
+        const sourceTotal = poems.filter((p) =>
+          POEM_TO_MSS[p].includes(source),
+        ).length;
+
+        tooltip.innerHTML = `
+          <div style="margin-bottom:4px;">${status}</div>
+          <div style="font-family: 'Crimson Text', serif; font-size:1.1em; margin-bottom:2px;">${poem}</div>
+          <div style="font-size:0.9em; color:#bbb; margin-bottom:8px;">Appears in ${poemTotal} sources</div>
+          <div style="border-top:1px solid rgba(255,255,255,0.2); padding-top:4px;">
+            <span style="color:#aaa;">Source:</span> <strong>${source}</strong>
+            <div style="font-size:0.9em; color:#bbb;">Contains ${sourceTotal} poems</div>
+          </div>
+        `;
+        tooltip.style.display = "block";
+        moveCellTooltip(event);
+
+        document.getElementById("statusIndicator").style.display = "block";
+        document.getElementById("statusIndicator").textContent =
+          `${isConnected ? "Connected" : "No Link"}: ${truncateText(poem, 20)} ↔ ${source}`;
+      }
+
+      function moveCellTooltip(event) {
+        const tooltip = document.getElementById("tip");
+        // Check bounds
+        const x = event.clientX + 15;
+        const y = event.clientY + 15;
+
+        tooltip.style.left = x + "px";
+        tooltip.style.top = y + "px";
+      }
+
+      function hideCellTooltip() {
+        document.getElementById("tip").style.display = "none";
+        document.getElementById("statusIndicator").style.display = "none";
+      }
+
+      function updateSorting() {
+        currentPoemSort = document.getElementById("sortPoems").value;
+        currentSourceSort = document.getElementById("sortSources").value;
+        initializeHeatmap();
+      }
+
+      function toggleHero() {
+        const hero = document.getElementById("heroSection");
+        const toggleBtn = document.getElementById("heroToggle");
+        hero.classList.toggle("collapsed");
+        toggleBtn.textContent = hero.classList.contains("collapsed")
+          ? "Show Info"
+          : "Hide Info";
+      }
+
+      // Export using html2canvas on the SVG container
+      // Note: direct SVG to Canvas is cleaner but html2canvas is imported so we use it for layout preservation
+      function exportImage() {
+        const viz = document.querySelector("#heatmapMatrix");
+        // Temporarily set background to white for export
+        const originalBg = viz.style.background;
+        viz.style.background = "#ffffff";
+
+        html2canvas(viz).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = "poem-network-map.png";
+          link.href = canvas.toDataURL();
+          link.click();
+          viz.style.background = originalBg;
+        });
+      }
+
+      // Listeners
+      document
+        .getElementById("sortPoems")
+        .addEventListener("change", updateSorting);
+      document
+        .getElementById("sortSources")
+        .addEventListener("change", updateSorting);
+      document
+        .getElementById("exportBtn")
+        .addEventListener("click", exportImage);
+
+      // Initial Load
+      window.onload = fetchData;
+    </script>
+  </body>
+</html>
