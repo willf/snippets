@@ -1,6 +1,6 @@
 # Snippets
 
-A place to share snippets of code and small one-page apps.
+A place to share snippets of code and small one-page apps, by Will Fitzgerald.
 
 ## Structure
 
