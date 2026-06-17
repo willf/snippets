@@ -1,0 +1,19 @@
+[project]
+name = "snippets"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "bs4>=0.0.2",
+    "datasets>=4.6.0",
+    "rapidfuzz>=3.14.3",
+    "requests>=2.32.5",
+    "rich>=14.2.0",
+    "yt-dlp>=2026.2.21",
+]
+
+[dependency-groups]
+dev = [
+    "ipython>=9.9.0",
+]
