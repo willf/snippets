@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jq Cheatsheet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0f1115;
+        color: #e2e8f0;
+      }
+
+      .font-mono {
+        font-family: "Fira Code", monospace;
+      }
+
+      .cheat-card {
+        background: linear-gradient(145deg, #1e2128, #181a20);
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .cheat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px -4px rgba(20, 184, 166, 0.15);
+        border-color: rgba(20, 184, 166, 0.3);
+      }
+
+      kbd {
+        background-color: #2d313b;
+        border: 1px solid #4b5162;
+        border-bottom-width: 2px;
+        border-radius: 5px;
+        padding: 0.1rem 0.3rem;
+        font-size: 0.75rem;
+        color: #14b8a6;
+        font-family: "Fira Code", monospace;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        font-weight: 500;
+      }
+
+      .terminal-cmd {
+        color: #a78bfa;
+        font-weight: 500;
+      }
+
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #2dd4bf, #818cf8);
+      }
+    </style>
+  </head>
+  <body class="antialiased min-h-screen py-8 px-4 sm:px-8">
+    <div class="max-w-5xl mx-auto">
+      <header
+        class="mb-10 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between border-b border-gray-800 pb-5 gap-5"
+      >
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
+            <span class="text-gradient">jq</span> Cheatsheet
+          </h1>
+          <p class="text-gray-400 text-base max-w-xl">
+            Slice, transform, and build JSON from the command line without
+            writing throwaway scripts.
+          </p>
+        </div>
+
+        <div
+          class="bg-gray-800/50 backdrop-blur-sm border border-teal-500/30 rounded-xl p-3 shadow-lg text-center shrink-0"
+        >
+          <p
+            class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1.5"
+          >
+            Common Invocation
+          </p>
+          <div class="flex items-center justify-center gap-2 text-base">
+            <span class="font-mono text-sm terminal-cmd">jq</span>
+            <span class="text-gray-500">+</span>
+            <span class="font-mono text-sm terminal-cmd">'filter'</span>
+          </div>
+          <p class="text-[10px] text-gray-500 mt-1">
+            Filter first, then file/stdin
+          </p>
+        </div>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="p-1.5 bg-indigo-500/20 rounded-lg">
+              <svg
+                class="w-5 h-5 text-indigo-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-100">Core Basics</h2>
+          </div>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Pretty-print JSON</span>
+              <span class="font-mono text-xs terminal-cmd">jq . data.json</span>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Compact output</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -c '.[]' data.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Raw strings (no quotes)</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -r '.name' data.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Read from stdin</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >cat data.json | jq '.id'</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Check valid JSON</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq empty data.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Sort object keys</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -S . data.json</span
+              >
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">No color output</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -M . data.json</span
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="p-1.5 bg-teal-500/20 rounded-lg">
+              <svg
+                class="w-5 h-5 text-teal-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 10l4.553-4.553a2.121 2.121 0 00-3-3L12 7m3 3l-6 6m0 0l-4 4m4-4l3.879 3.879a3 3 0 004.243 0l1.415-1.414a3 3 0 000-4.243L15 10z"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-100">Select & Filter</h2>
+          </div>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Field access</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq '.user.email' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Array item</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq '.[0]' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Array slice</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq '.[1:4]' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Filter by condition</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq '.[] | select(.ok)' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Multiple fields</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq '.[] | {id,name}' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Has key?</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq 'has("items")' file.json</span
+              >
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Safe optional access</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq '.meta?.version' file.json</span
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="p-1.5 bg-pink-500/20 rounded-lg">
+              <svg
+                class="w-5 h-5 text-pink-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-100">Transform Data</h2>
+          </div>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Map values</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq 'map(.price * 1.1)' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Add/update field</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq '.status = "done"' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Delete field</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq 'del(.debug)' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Sort array by key</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq 'sort_by(.score)' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Unique values</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq 'unique_by(.id)' file.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Flatten nested arrays</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq 'flatten' file.json</span
+              >
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Group by field</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq 'group_by(.team)' file.json</span
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="p-1.5 bg-yellow-500/20 rounded-lg">
+              <svg
+                class="w-5 h-5 text-yellow-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 17v-2a4 4 0 014-4h7m0 0l-3-3m3 3l-3 3M5 3h4a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-100">Files & Output</h2>
+          </div>
+          <ul class="space-y-3 text-sm">
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Read all files as array</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -s '.' a.json b.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">JSONL to JSON array</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -s '.' data.jsonl</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">JSON array to JSONL</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -c '.[]' data.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Null input mode</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -n '{ts: now}'</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Pass shell arg</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq --arg env prod '.env=$env' f.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Pass numeric arg</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq --argjson n 3 '.limit=$n' f.json</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Read raw text lines</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -R . notes.txt</span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Raw lines as one JSON array</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -Rs 'split("\n")[:-1]' notes.txt</span
+              >
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Exit status for CI checks</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >jq -e '.ok == true' f.json</span
+              >
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <h2
+        class="text-2xl font-bold tracking-tight mb-5 mt-12 text-gray-100 flex items-center gap-2"
+      >
+        <svg
+          class="w-6 h-6 text-teal-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+          ></path>
+        </svg>
+        Typical Use Patterns
+      </h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-indigo-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-indigo-300 mb-2">
+            1. API Triage Fast
+          </h3>
+          <p class="text-xs text-gray-400 mb-3 h-10">
+            Pull just the signal from noisy API payloads while debugging
+            endpoint responses.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p><span class="text-gray-500"># 1. Hit endpoint</span></p>
+            <p class="text-green-400">
+              $ curl -s https://api.example.com/users
+            </p>
+            <p>
+              <span class="text-gray-500"
+                ># 2. Keep only name + active flag</span
+              >
+            </p>
+            <p class="text-green-400">$ ... | jq '.users[] | {name, active}'</p>
+            <p>
+              <span class="text-gray-500"># 3. Show only active names</span>
+            </p>
+            <p class="text-green-400">
+              $ ... | jq -r '.users[] | select(.active) | .name'
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-pink-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-pink-300 mb-2">
+            2. Log Summaries
+          </h3>
+          <p class="text-xs text-gray-400 mb-3 h-10">
+            Convert JSONL logs into compact metrics in one pipeline for incident
+            response.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p>
+              <span class="text-gray-500"
+                ># 1. Read one JSON object per line</span
+              >
+            </p>
+            <p class="text-green-400">$ cat app.log.jsonl</p>
+            <p>
+              <span class="text-gray-500"># 2. Slurp lines to one array</span>
+            </p>
+            <p class="text-green-400">$ ... | jq -s '.'</p>
+            <p><span class="text-gray-500"># 3. Count by level</span></p>
+            <p class="text-green-400">
+              $ ... | jq 'group_by(.level) | map({level: .[0].level, n:
+              length})'
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-teal-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-teal-300 mb-2">
+            3. Build JSON for CLI Tools
+          </h3>
+          <p class="text-xs text-gray-400 mb-3 h-10">
+            Generate well-formed request bodies from shell variables without
+            brittle quoting.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p><span class="text-gray-500"># 1. Set shell values</span></p>
+            <p class="text-green-400">$ user_id=42; role=admin</p>
+            <p>
+              <span class="text-gray-500"># 2. Build JSON from null input</span>
+            </p>
+            <p class="text-green-400">
+              $ jq -n --arg id "$user_id" --arg role "$role" '{id:
+              ($id|tonumber), role: $role}'
+            </p>
+            <p><span class="text-gray-500"># 3. Pipe to next command</span></p>
+            <p class="text-green-400">
+              $ ... | curl -X POST -H 'content-type: application/json' -d @- ...
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-yellow-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-yellow-300 mb-2">
+            4. JSONL <-> JSON Array
+          </h3>
+          <p class="text-xs text-gray-400 mb-3 h-10">
+            Switch formats depending on whether tools expect one object per line
+            or one top-level array.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p><span class="text-gray-500"># 1. JSONL to JSON array</span></p>
+            <p class="text-green-400">$ jq -s '.' events.jsonl > events.json</p>
+            <p><span class="text-gray-500"># 2. JSON array to JSONL</span></p>
+            <p class="text-green-400">
+              $ jq -c '.[]' events.json > events.jsonl
+            </p>
+            <p>
+              <span class="text-gray-500"># 3. Quick row count from JSONL</span>
+            </p>
+            <p class="text-green-400">$ jq -s 'length' events.jsonl</p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mt-12 text-center text-gray-500 text-xs pb-8">
+        <p>
+          Pro tip: Keep complex jq filters in a file and run
+          <code class="bg-gray-800 px-1 py-0.5 rounded"
+            >jq -f filter.jq data.json</code
+          >
+          for readability and reuse.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
