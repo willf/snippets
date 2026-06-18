@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jq Filter Patterns Cheatsheet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0f1115;
+        color: #e2e8f0;
+      }
+
+      .font-mono {
+        font-family: "Fira Code", monospace;
+      }
+
+      .cheat-card {
+        background: linear-gradient(145deg, #1e2128, #181a20);
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .cheat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px -4px rgba(20, 184, 166, 0.15);
+        border-color: rgba(20, 184, 166, 0.3);
+      }
+
+      .terminal-cmd {
+        color: #a78bfa;
+        font-weight: 500;
+      }
+
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #2dd4bf, #818cf8);
+      }
+    </style>
+  </head>
+  <body class="antialiased min-h-screen py-8 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto">
+      <header
+        class="mb-10 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between border-b border-gray-800 pb-5 gap-5"
+      >
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
+            <span class="text-gradient">jq</span> Filter Patterns
+          </h1>
+          <p class="text-gray-400 text-base max-w-2xl">
+            A pattern-first reference for common jq filters: navigate, select,
+            reshape, aggregate, and compose pipelines quickly.
+          </p>
+        </div>
+
+        <div
+          class="bg-gray-800/50 backdrop-blur-sm border border-teal-500/30 rounded-xl p-3 shadow-lg text-center shrink-0"
+        >
+          <p
+            class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1.5"
+          >
+            Starter Form
+          </p>
+          <div class="font-mono text-xs terminal-cmd">
+            jq 'filter' input.json
+          </div>
+          <p class="text-[10px] text-gray-500 mt-1">
+            Build from small filters, then pipe them
+          </p>
+        </div>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5 mb-10">
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <h2 class="text-lg font-bold text-indigo-300 mb-4">
+            1. Access & Paths
+          </h2>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Nested key</span>
+              <span class="font-mono text-xs terminal-cmd">.user.email</span>
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Quoted key</span>
+              <span class="font-mono text-xs terminal-cmd">."first-name"</span>
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Array index</span>
+              <span class="font-mono text-xs terminal-cmd">.[0]</span>
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Array slice</span>
+              <span class="font-mono text-xs terminal-cmd">.[1:4]</span>
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Optional access</span>
+              <span class="font-mono text-xs terminal-cmd">.meta?.version</span>
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">List keys</span>
+              <span class="font-mono text-xs terminal-cmd">keys</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Leaf scalars</span>
+              <span class="font-mono text-xs terminal-cmd">.. | scalars</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <h2 class="text-lg font-bold text-teal-300 mb-4">
+            2. Select & Match
+          </h2>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Boolean condition</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >.[] | select(.ok)</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Equals match</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >select(.env=="prod")</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Range check</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >select(.age&gt;=18 and .age&lt;65)</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Regex contains</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >select(.msg | test("error";"i"))</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Starts/ends with</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >select(.name | startswith("svc-"))</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Has key</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >select(has("id"))</span
+              >
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Null-safe default</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >.region // "unknown"</span
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <h2 class="text-lg font-bold text-pink-300 mb-4">
+            3. Reshape Objects
+          </h2>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Pick fields</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >{id,name,status}</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Rename field</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >{user_id:.id, name:.name}</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Add field</span>
+              <span class="font-mono text-xs terminal-cmd">. + {ok:true}</span>
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Update value</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >.count |= (. + 1)</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Delete field</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >del(.debug, .trace)</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Merge objects</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >.base * .override</span
+              >
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">To key/value rows</span>
+              <span class="font-mono text-xs terminal-cmd">to_entries[]</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <h2 class="text-lg font-bold text-yellow-300 mb-4">
+            4. Array Patterns
+          </h2>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Map values</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >map(.price * 1.1)</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Filter in map style</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >map(select(.active))</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Sort by key</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >sort_by(.score)</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Reverse sort</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >sort_by(.score) | reverse</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Unique by field</span>
+              <span class="font-mono text-xs terminal-cmd">unique_by(.id)</span>
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Flatten nested arrays</span>
+              <span class="font-mono text-xs terminal-cmd">flatten</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Top N rows</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >sort_by(.score) | reverse | .[:5]</span
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <h2 class="text-lg font-bold text-sky-300 mb-4">5. Group & Reduce</h2>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Count items</span>
+              <span class="font-mono text-xs terminal-cmd">length</span>
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Sum numbers</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >map(.amount) | add</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Average value</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >(map(.latency)|add) / length</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Min/max by field</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >min_by(.ts), max_by(.ts)</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Group by key</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >group_by(.team)</span
+              >
+            </li>
+            <li
+              class="border-b border-gray-800 pb-1.5 flex justify-between items-center"
+            >
+              <span class="text-gray-300">Group + counts</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >group_by(.s) | map({s:.[0].s,n:length})</span
+              >
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Custom reduce</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >reduce .[] as $x (0; . + $x.cost)</span
+              >
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <h2 class="text-2xl font-bold tracking-tight mb-5 mt-12 text-gray-100">
+        Common Pipeline Recipes
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-indigo-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-indigo-300 mb-2">
+            1. Select + Project
+          </h3>
+          <p class="text-xs text-gray-400 mb-3">
+            Keep only rows you care about, then trim to report columns.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p class="text-gray-500">.[]</p>
+            <p class="text-gray-500">| select(.status == "open")</p>
+            <p class="text-gray-500">| {id, owner, priority}</p>
+            <p class="text-green-400">
+              jq '.[] | select(.status=="open") | {id,owner,priority}'
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-pink-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-pink-300 mb-2">
+            2. Group + Count
+          </h3>
+          <p class="text-xs text-gray-400 mb-3">
+            Build a compact distribution table from event streams.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p class="text-gray-500">group_by(.level)</p>
+            <p class="text-gray-500">
+              | map({level: .[0].level, count: length})
+            </p>
+            <p class="text-green-400">
+              jq 'group_by(.level) | map({level:.[0].level,count:length})'
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-teal-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-teal-300 mb-2">
+            3. Update In Place
+          </h3>
+          <p class="text-xs text-gray-400 mb-3">
+            Normalize shape while preserving everything else.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p class="text-gray-500">
+              .items |= map(.price |= (. * 100 | floor))
+            </p>
+            <p class="text-gray-500">| .currency = "cents"</p>
+            <p class="text-green-400">
+              jq '.items |= map(.price |= (. * 100 | floor)) |
+              .currency="cents"'
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-yellow-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-yellow-300 mb-2">
+            4. JSONL Roundtrip
+          </h3>
+          <p class="text-xs text-gray-400 mb-3">
+            Swap between one-object-per-line and one-array formats.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p class="text-green-400">
+              jq -s '.' events.jsonl &gt; events.json
+            </p>
+            <p class="text-green-400">
+              jq -c '.[]' events.json &gt; events.jsonl
+            </p>
+            <p class="text-gray-500">Use -s for slurp, .[] for explode</p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mt-12 text-center text-gray-500 text-xs pb-8">
+        <p>
+          Pro tip: Start with a tiny filter like
+          <code class="bg-gray-800 px-1 py-0.5 rounded">.[] | {id}</code>
+          and grow it step-by-step instead of writing a giant one-liner first.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
