@@ -1,301 +1,497 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beautiful Tmux Cheatsheet</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tmux Cheatsheet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f1115; /* Deep dark bg */
-            color: #e2e8f0;
-        }
+      @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap");
 
-        .font-mono {
-            font-family: 'Fira Code', monospace;
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0f1115; /* Deep dark bg */
+        color: #e2e8f0;
+      }
 
-        /* Glassmorphism / Neon Card styles */
-        .cheat-card {
-            background: linear-gradient(145deg, #1e2128, #181a20);
-            box-shadow: 0 4px 20px -2px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .cheat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px -4px rgba(20, 184, 166, 0.15); /* Teal glow */
-            border-color: rgba(20, 184, 166, 0.3);
-        }
+      .font-mono {
+        font-family: "Fira Code", monospace;
+      }
 
-        /* Keyboard key styling */
-        kbd {
-            background-color: #2d313b;
-            border: 1px solid #4b5162;
-            border-bottom-width: 2px;
-            border-radius: 5px;
-            padding: 0.1rem 0.3rem;
-            font-size: 0.75rem;
-            color: #14b8a6; /* Teal-400 */
-            font-family: 'Fira Code', monospace;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.2);
-            font-weight: 500;
-        }
+      /* Glassmorphism / Neon Card styles */
+      .cheat-card {
+        background: linear-gradient(145deg, #1e2128, #181a20);
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
 
-        .terminal-cmd {
-            color: #a78bfa; /* Violet-400 */
-            font-weight: 500;
-        }
+      .cheat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px -4px rgba(20, 184, 166, 0.15); /* Teal glow */
+        border-color: rgba(20, 184, 166, 0.3);
+      }
 
-        /* Gradient Text */
-        .text-gradient {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(to right, #2dd4bf, #818cf8);
-        }
+      /* Keyboard key styling */
+      kbd {
+        background-color: #2d313b;
+        border: 1px solid #4b5162;
+        border-bottom-width: 2px;
+        border-radius: 5px;
+        padding: 0.1rem 0.3rem;
+        font-size: 0.75rem;
+        color: #14b8a6; /* Teal-400 */
+        font-family: "Fira Code", monospace;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        font-weight: 500;
+      }
+
+      .terminal-cmd {
+        color: #a78bfa; /* Violet-400 */
+        font-weight: 500;
+      }
+
+      /* Gradient Text */
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #2dd4bf, #818cf8);
+      }
     </style>
-</head>
-<body class="antialiased min-h-screen py-8 px-4 sm:px-8">
-
+  </head>
+  <body class="antialiased min-h-screen py-8 px-4 sm:px-8">
     <div class="max-w-5xl mx-auto">
-        <!-- Header -->
-        <header class="mb-10 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between border-b border-gray-800 pb-5 gap-5">
-            <div>
-                <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
-                    <span class="text-gradient">Tmux</span> Cheatsheet
-                </h1>
-                <p class="text-gray-400 text-base max-w-xl">Master the terminal multiplexer. Navigate sessions, windows, and panes like a pro.</p>
-            </div>
-            
-            <!-- Global Prefix Reminder -->
-            <div class="bg-gray-800/50 backdrop-blur-sm border border-teal-500/30 rounded-xl p-3 shadow-lg text-center shrink-0">
-                <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1.5">Global Prefix</p>
-                <div class="flex items-center justify-center gap-2 text-base">
-                    <kbd>Ctrl</kbd> <span class="text-gray-500">+</span> <kbd>b</kbd>
-                </div>
-                <p class="text-[10px] text-gray-500 mt-1">Press these first for most commands</p>
-            </div>
-        </header>
-
-        <!-- Main Cheatsheet Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
-
-            <!-- SESSIONS -->
-            <section class="cheat-card rounded-2xl p-5 flex flex-col">
-                <div class="flex items-center gap-2.5 mb-4">
-                    <div class="p-1.5 bg-indigo-500/20 rounded-lg">
-                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-100">Sessions</h2>
-                </div>
-                <ul class="space-y-3 flex-grow text-sm">
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">New session</span>
-                        <span class="font-mono text-xs terminal-cmd">tmux new -s <span class="text-gray-500 italic">name</span></span>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Attach session</span>
-                        <span class="font-mono text-xs terminal-cmd">tmux a -t <span class="text-gray-500 italic">name</span></span>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">List sessions</span>
-                        <span class="font-mono text-xs terminal-cmd">tmux ls</span>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Kill session</span>
-                        <span class="font-mono text-xs terminal-cmd">tmux kill-sess -t <span class="text-gray-500 italic">name</span></span>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Detach</span>
-                        <div><kbd>prefix</kbd> + <kbd>d</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Rename current</span>
-                        <div><kbd>prefix</kbd> + <kbd>$</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <span class="text-gray-300">Switch session</span>
-                        <div><kbd>prefix</kbd> + <kbd>s</kbd></div>
-                    </li>
-                </ul>
-            </section>
-
-            <!-- WINDOWS -->
-            <section class="cheat-card rounded-2xl p-5 flex flex-col">
-                <div class="flex items-center gap-2.5 mb-4">
-                    <div class="p-1.5 bg-teal-500/20 rounded-lg">
-                        <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16"></path></svg>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-100">Windows (Tabs)</h2>
-                </div>
-                <ul class="space-y-3 flex-grow text-sm">
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">New window</span>
-                        <div><kbd>prefix</kbd> + <kbd>c</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Next / Prev</span>
-                        <div><kbd>prefix</kbd> + <kbd>n</kbd> / <kbd>p</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Go to window 0-9</span>
-                        <div><kbd>prefix</kbd> + <kbd>0-9</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Rename window</span>
-                        <div><kbd>prefix</kbd> + <kbd>,</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Close window</span>
-                        <div><kbd>prefix</kbd> + <kbd>&</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">List windows</span>
-                        <div><kbd>prefix</kbd> + <kbd>w</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <span class="text-gray-300">Find window</span>
-                        <div><kbd>prefix</kbd> + <kbd>f</kbd></div>
-                    </li>
-                </ul>
-            </section>
-
-            <!-- PANES -->
-            <section class="cheat-card rounded-2xl p-5 flex flex-col">
-                <div class="flex items-center gap-2.5 mb-4">
-                    <div class="p-1.5 bg-pink-500/20 rounded-lg">
-                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-100">Panes (Splits)</h2>
-                </div>
-                <ul class="space-y-3 flex-grow text-sm">
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Split Vertical</span>
-                        <div><kbd>prefix</kbd> + <kbd>%</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Split Horizontal</span>
-                        <div><kbd>prefix</kbd> + <kbd>"</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Navigate panes</span>
-                        <div><kbd>prefix</kbd> + <kbd>Arrows</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Toggle Fullscreen</span>
-                        <div><kbd>prefix</kbd> + <kbd>z</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Close pane</span>
-                        <div><kbd>prefix</kbd> + <kbd>x</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Cycle layouts</span>
-                        <div><kbd>prefix</kbd> + <kbd>Space</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <span class="text-gray-300">Show pane numbers</span>
-                        <div><kbd>prefix</kbd> + <kbd>q</kbd></div>
-                    </li>
-                </ul>
-            </section>
-            
-            <!-- COPY MODE & MISC -->
-            <section class="cheat-card rounded-2xl p-5 flex flex-col">
-                <div class="flex items-center gap-2.5 mb-4">
-                    <div class="p-1.5 bg-yellow-500/20 rounded-lg">
-                        <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-100">Copy Mode & Misc</h2>
-                </div>
-                <ul class="space-y-3 text-sm">
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Enter Copy Mode<br><span class="text-[11px] text-gray-500">(Allows scrolling output)</span></span>
-                        <div><kbd>prefix</kbd> + <kbd>[</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Quit Copy Mode</span>
-                        <div><kbd>q</kbd></div>
-                    </li>
-                    <li class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                        <span class="text-gray-300">Reload Config</span>
-                        <span class="font-mono text-xs terminal-cmd">tmux source ~/.tmux.conf</span>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <span class="text-gray-300">Command Prompt</span>
-                        <div><kbd>prefix</kbd> + <kbd>:</kbd></div>
-                    </li>
-                </ul>
-            </section>
+      <!-- Header -->
+      <header
+        class="mb-10 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between border-b border-gray-800 pb-5 gap-5"
+      >
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
+            <span class="text-gradient">Tmux</span> Cheatsheet
+          </h1>
+          <p class="text-gray-400 text-base max-w-xl">
+            Master the terminal multiplexer. Navigate sessions, windows, and
+            panes like a pro.
+          </p>
         </div>
 
-        <!-- TYPICAL USE PATTERNS -->
-        <h2 class="text-2xl font-bold tracking-tight mb-5 mt-12 text-gray-100 flex items-center gap-2">
-            <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
-            Typical Use Patterns
-        </h2>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            
-            <!-- Pattern 1 -->
-            <div class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-indigo-500/50 transition-colors">
-                <h3 class="text-lg font-semibold text-indigo-300 mb-2">1. The "Fire & Forget"</h3>
-                <p class="text-xs text-gray-400 mb-3 h-10">Perfect for running long scripts on remote servers without fear of SSH disconnections.</p>
-                <div class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5">
-                    <p><span class="text-gray-500"># 1. Start a named session</span></p>
-                    <p class="text-green-400">$ tmux new -s deploy</p>
-                    <p><span class="text-gray-500"># 2. Start your 5-hour task</span></p>
-                    <p class="text-green-400">$ ./massive_db_migration.sh</p>
-                    <p><span class="text-gray-500"># 3. Detach and close SSH</span></p>
-                    <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>d</kbd></p>
-                    <p><span class="text-gray-500"># 4. Later, re-attach</span></p>
-                    <p class="text-green-400">$ tmux a -t deploy</p>
-                </div>
-            </div>
-
-            <!-- Pattern 2 -->
-            <div class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-pink-500/50 transition-colors">
-                <h3 class="text-lg font-semibold text-pink-300 mb-2">2. The "IDE Split"</h3>
-                <p class="text-xs text-gray-400 mb-3 h-10">The classic web developer setup: Editor on the left, server and git on the right.</p>
-                <div class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5">
-                    <p><span class="text-gray-500"># 1. Open editor taking full screen</span></p>
-                    <p class="text-green-400">$ nvim index.js</p>
-                    <p><span class="text-gray-500"># 2. Split vertically (Right panel)</span></p>
-                    <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>%</kbd></p>
-                    <p><span class="text-gray-500"># 3. Split right panel horizontally</span></p>
-                    <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>"</kbd></p>
-                    <p><span class="text-gray-500"># 4. Run server top right, git bottom</span></p>
-                    <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>Arrows</kbd> to move</p>
-                </div>
-            </div>
-
-            <!-- Pattern 3 -->
-            <div class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-teal-500/50 transition-colors">
-                <h3 class="text-lg font-semibold text-teal-300 mb-2">3. The Context Switcher</h3>
-                <p class="text-xs text-gray-400 mb-3 h-10">Juggling multiple projects? Keep each project in its own self-contained session.</p>
-                <div class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5">
-                    <p><span class="text-gray-500"># 1. Start Client project</span></p>
-                    <p class="text-green-400">$ tmux new -s ClientApp</p>
-                    <p><span class="text-gray-500"># 2. Detach </span> <kbd>prefix</kbd> + <kbd>d</kbd></p>
-                    <p><span class="text-gray-500"># 3. Start API project</span></p>
-                    <p class="text-green-400">$ tmux new -s API</p>
-                    <p><span class="text-gray-500"># 4. Pop open the session switcher UI</span></p>
-                    <p><span class="text-gray-500"># visually jump between projects</span></p>
-                    <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>s</kbd></p>
-                </div>
-            </div>
-
+        <!-- Global Prefix Reminder -->
+        <div
+          class="bg-gray-800/50 backdrop-blur-sm border border-teal-500/30 rounded-xl p-3 shadow-lg text-center shrink-0"
+        >
+          <p
+            class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1.5"
+          >
+            Global Prefix
+          </p>
+          <div class="flex items-center justify-center gap-2 text-base">
+            <kbd>Ctrl</kbd> <span class="text-gray-500">+</span> <kbd>b</kbd>
+          </div>
+          <p class="text-[10px] text-gray-500 mt-1">
+            Press these first for most commands
+          </p>
         </div>
-        
-        <footer class="mt-12 text-center text-gray-500 text-xs pb-8">
-            <p>Pro tip: Customize your <code class="bg-gray-800 px-1 py-0.5 rounded">~/.tmux.conf</code> to map Caps Lock to Ctrl for easier prefixing.</p>
-        </footer>
+      </header>
 
+      <!-- Main Cheatsheet Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
+        <!-- SESSIONS -->
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="p-1.5 bg-indigo-500/20 rounded-lg">
+              <svg
+                class="w-5 h-5 text-indigo-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-100">Sessions</h2>
+          </div>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">New session</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >tmux new -s
+                <span class="text-gray-500 italic">name</span></span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Attach session</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >tmux a -t <span class="text-gray-500 italic">name</span></span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">List sessions</span>
+              <span class="font-mono text-xs terminal-cmd">tmux ls</span>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Kill session</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >tmux kill-sess -t
+                <span class="text-gray-500 italic">name</span></span
+              >
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Detach</span>
+              <div><kbd>prefix</kbd> + <kbd>d</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Rename current</span>
+              <div><kbd>prefix</kbd> + <kbd>$</kbd></div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Switch session</span>
+              <div><kbd>prefix</kbd> + <kbd>s</kbd></div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- WINDOWS -->
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="p-1.5 bg-teal-500/20 rounded-lg">
+              <svg
+                class="w-5 h-5 text-teal-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 10h16"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-100">Windows (Tabs)</h2>
+          </div>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">New window</span>
+              <div><kbd>prefix</kbd> + <kbd>c</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Next / Prev</span>
+              <div><kbd>prefix</kbd> + <kbd>n</kbd> / <kbd>p</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Go to window 0-9</span>
+              <div><kbd>prefix</kbd> + <kbd>0-9</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Rename window</span>
+              <div><kbd>prefix</kbd> + <kbd>,</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Close window</span>
+              <div><kbd>prefix</kbd> + <kbd>&</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">List windows</span>
+              <div><kbd>prefix</kbd> + <kbd>w</kbd></div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Find window</span>
+              <div><kbd>prefix</kbd> + <kbd>f</kbd></div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- PANES -->
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="p-1.5 bg-pink-500/20 rounded-lg">
+              <svg
+                class="w-5 h-5 text-pink-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-100">Panes (Splits)</h2>
+          </div>
+          <ul class="space-y-3 flex-grow text-sm">
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Split Vertical</span>
+              <div><kbd>prefix</kbd> + <kbd>%</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Split Horizontal</span>
+              <div><kbd>prefix</kbd> + <kbd>"</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Navigate panes</span>
+              <div><kbd>prefix</kbd> + <kbd>Arrows</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Toggle Fullscreen</span>
+              <div><kbd>prefix</kbd> + <kbd>z</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Close pane</span>
+              <div><kbd>prefix</kbd> + <kbd>x</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Cycle layouts</span>
+              <div><kbd>prefix</kbd> + <kbd>Space</kbd></div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Show pane numbers</span>
+              <div><kbd>prefix</kbd> + <kbd>q</kbd></div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- COPY MODE & MISC -->
+        <section class="cheat-card rounded-2xl p-5 flex flex-col">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="p-1.5 bg-yellow-500/20 rounded-lg">
+              <svg
+                class="w-5 h-5 text-yellow-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-100">Copy Mode & Misc</h2>
+          </div>
+          <ul class="space-y-3 text-sm">
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300"
+                >Enter Copy Mode<br /><span class="text-[11px] text-gray-500"
+                  >(Allows scrolling output)</span
+                ></span
+              >
+              <div><kbd>prefix</kbd> + <kbd>[</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Quit Copy Mode</span>
+              <div><kbd>q</kbd></div>
+            </li>
+            <li
+              class="flex justify-between items-center border-b border-gray-800 pb-1.5"
+            >
+              <span class="text-gray-300">Reload Config</span>
+              <span class="font-mono text-xs terminal-cmd"
+                >tmux source ~/.tmux.conf</span
+              >
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-300">Command Prompt</span>
+              <div><kbd>prefix</kbd> + <kbd>:</kbd></div>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- TYPICAL USE PATTERNS -->
+      <h2
+        class="text-2xl font-bold tracking-tight mb-5 mt-12 text-gray-100 flex items-center gap-2"
+      >
+        <svg
+          class="w-6 h-6 text-teal-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+          ></path>
+        </svg>
+        Typical Use Patterns
+      </h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <!-- Pattern 1 -->
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-indigo-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-indigo-300 mb-2">
+            1. The "Fire & Forget"
+          </h3>
+          <p class="text-xs text-gray-400 mb-3 h-10">
+            Perfect for running long scripts on remote servers without fear of
+            SSH disconnections.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p><span class="text-gray-500"># 1. Start a named session</span></p>
+            <p class="text-green-400">$ tmux new -s deploy</p>
+            <p>
+              <span class="text-gray-500"># 2. Start your 5-hour task</span>
+            </p>
+            <p class="text-green-400">$ ./massive_db_migration.sh</p>
+            <p><span class="text-gray-500"># 3. Detach and close SSH</span></p>
+            <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>d</kbd></p>
+            <p><span class="text-gray-500"># 4. Later, re-attach</span></p>
+            <p class="text-green-400">$ tmux a -t deploy</p>
+          </div>
+        </div>
+
+        <!-- Pattern 2 -->
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-pink-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-pink-300 mb-2">
+            2. The "IDE Split"
+          </h3>
+          <p class="text-xs text-gray-400 mb-3 h-10">
+            The classic web developer setup: Editor on the left, server and git
+            on the right.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p>
+              <span class="text-gray-500"
+                ># 1. Open editor taking full screen</span
+              >
+            </p>
+            <p class="text-green-400">$ nvim index.js</p>
+            <p>
+              <span class="text-gray-500"
+                ># 2. Split vertically (Right panel)</span
+              >
+            </p>
+            <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>%</kbd></p>
+            <p>
+              <span class="text-gray-500"
+                ># 3. Split right panel horizontally</span
+              >
+            </p>
+            <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>"</kbd></p>
+            <p>
+              <span class="text-gray-500"
+                ># 4. Run server top right, git bottom</span
+              >
+            </p>
+            <p class="text-gray-300">
+              <kbd>prefix</kbd> + <kbd>Arrows</kbd> to move
+            </p>
+          </div>
+        </div>
+
+        <!-- Pattern 3 -->
+        <div
+          class="bg-gray-800/40 rounded-2xl p-5 border border-gray-700/50 hover:border-teal-500/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-teal-300 mb-2">
+            3. The Context Switcher
+          </h3>
+          <p class="text-xs text-gray-400 mb-3 h-10">
+            Juggling multiple projects? Keep each project in its own
+            self-contained session.
+          </p>
+          <div
+            class="bg-gray-900 rounded-lg p-3 font-mono text-xs shadow-inner space-y-1.5"
+          >
+            <p><span class="text-gray-500"># 1. Start Client project</span></p>
+            <p class="text-green-400">$ tmux new -s ClientApp</p>
+            <p>
+              <span class="text-gray-500"># 2. Detach </span>
+              <kbd>prefix</kbd> + <kbd>d</kbd>
+            </p>
+            <p><span class="text-gray-500"># 3. Start API project</span></p>
+            <p class="text-green-400">$ tmux new -s API</p>
+            <p>
+              <span class="text-gray-500"
+                ># 4. Pop open the session switcher UI</span
+              >
+            </p>
+            <p>
+              <span class="text-gray-500"
+                ># visually jump between projects</span
+              >
+            </p>
+            <p class="text-gray-300"><kbd>prefix</kbd> + <kbd>s</kbd></p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mt-12 text-center text-gray-500 text-xs pb-8">
+        <p>
+          Pro tip: Customize your
+          <code class="bg-gray-800 px-1 py-0.5 rounded">~/.tmux.conf</code> to
+          map Caps Lock to Ctrl for easier prefixing.
+        </p>
+      </footer>
     </div>
-</body>
+  </body>
 </html>
