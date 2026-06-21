@@ -73,6 +73,52 @@
         text-indent: 30px;
       }
 
+      .sentence-numbered-text {
+        counter-reset: sentence;
+      }
+
+      .text-paragraph {
+        margin: 0 0 1.25rem 0;
+        font-size: 1.22rem;
+        line-height: 2.95;
+      }
+
+      .text-paragraph:not(.quote) {
+        text-indent: 1.5em;
+      }
+
+      .sentence {
+        display: inline;
+        margin-right: 0.22em;
+      }
+
+      .sentence::before {
+        counter-increment: sentence;
+        content: counter(sentence) " ";
+        color: #aaa091;
+        font-size: 0.68em;
+        line-height: 1;
+        vertical-align: super;
+        font-variant-numeric: tabular-nums;
+        user-select: none;
+      }
+
+      .text-paragraph.quote .sentence::before {
+        counter-increment: none;
+        content: "";
+      }
+
+      .sentence-content {
+        display: inline;
+      }
+
+      .text-paragraph.quote {
+        font-style: italic;
+        border-left: 3px solid var(--accent-color);
+        padding-left: 20px;
+        color: #4a423a;
+      }
+
       /* Styling for the interactive dictionary words */
       .lsj-word {
         color: var(--link-color);
@@ -112,7 +158,8 @@
 
       <footer>
         <p style="text-align: center; text-indent: 0">
-          From Migne's Patrologia Graeca (Volume 44, columns 1193–1301)
+          From Migne's Patrologia Graeca (Volume 44, columns 1193–1301).
+          Numbering is by sentence number.
         </p>
       </footer>
     </div>
@@ -141,49 +188,82 @@
 Πῶς οὖν ἀλλοτρίας ζωῆς κύριος ὁ τῆς ἰδίας ἀλλότριος; Καὶ οὗτος τοίνυν εἰ πτωχεύει τῷ πνεύματι, πρὸς τὸν δι’ ἡμᾶς πτωχεύσαντα ἑκουσίως βλέπων, καὶ πρὸς τὸ τῆς φύσεως ὁμότιμον καθορῶν, μηδὲν ἐκ τῆς ἠπατημένης ἐκείνης περὶ ἀρχὴν τραγῳδίας εἰς τὸ ὁμογενὲς ἐξυβρίζοι, μακαριστὸς ἀληθῶς τῆς ταπεινοφροσύνης τῆς προσκαίρου, τὴν τῶν οὐρανῶν βασιλείαν ἀνταλλαξάμενος. Μὴ ἀποβάλῃς, ἀδελφὲ, καὶ τὸν ἕτερον τῆς πτωχείας λόγον, ὃς τοῦ κατ’ οὐρανὸν πλούτου πρόξενος γίνεται. Πώλησόν σου, φησὶ, πάντα τὰ ὑπάρχοντα, καὶ δὸς πτωχοῖς, καὶ δεῦρο, ἀκολούθει μοι, καὶ ἕξεις θησαυρὸν ἐν οὐρανοῖς. Καὶ γὰρ ἡ τοιαύτη πτωχεία δοκεῖ μοι μὴ ἀπᾴδειν τῆς μακαριζομένης πτωχείας. Ἰδοὺ πάντα, ὅσα εἴχομεν, ἀφέντες ἠκολουθήσαμέν σοι, φησὶ πρὸς τὸν Δεσπότην ὁ μαθητής· τί ἄρα ἔσται ἡμῖν; Καὶ τίς ἡ ἀπόκρισις; Μακάριοι οἱ πτωχοὶ τῷ πνεύματι, ὅτι αὐτῶν ἐστιν ἡ βασιλεία τῶν οὐρανῶν. Βούλει νοῆσαι, τίς ὁ πτωχεύων τῷ πνεύματι; Ὁ ἀνταλλαξάμενος τὸν τῆς ψυχῆς πλοῦτον τῆς σωματικῆς εὐπορίας, ὁ διὰ τὸ πνεῦμα πτωχεύων, ὁ τὸν γήϊνον πλοῦτον οἷόν τι βάρος ἀποσεισάμενος, ἵνα μετάρσιός τε καὶ διαέριος ἄνω φέρηται, καθώς φησιν ὁ Ἀπόστολος, ἐπὶ νεφέλης συμμετεωροπορῶν τῷ Θεῷ. Βαρύ τι χρῆμα τὸ χρυσίον ἐστὶν, βαρεῖα πᾶσα ἡ σπουδαζομένη κατὰ τὸν πλοῦτον ὕλη· κοῦφον δέ τι καὶ ἀνωφερὲς πρᾶγμα ἡ ἀρετή. Ἀλλὰ μὴν ἀντίκειται ταῦτα ἀλλήλοις, τὸ βάρος καὶ ἡ κουφότης. Οὐκοῦν ἀμήχανόν τινα γενέσθαι κοῦφον, τῷ βάρει τῆς ὕλης ἑαυτὸν προσηλώσαντα. Εἰ οὖν χρὴ τοῖς ἄνω προσβῆναι, τῶν κάτω καθελκόντων πτωχεύσωμεν, ἵνα ἐν τοῖς ἄνω γενώμεθα. Τίς δὲ ὁ τρόπος, ὑφηγεῖται ἡ ψαλμῳδία· Ἐσκόρπισεν, ἔδωκε τοῖς πένησιν, ἡ δικαιοσύνη αὐτοῦ μένει εἰς τὸν αἰῶνα τοῦ αἰῶνος. Ὁ τῷ πτωχῷ κοινωνήσας, εἰς τὴν μερίδα τοῦ δι’ ἡμᾶς πτωχεύσαντος ἑαυτὸν καταστήσει. Ἐπτώχευσεν ὁ Κύριος, μὴ φοβηθῇς μηδὲ σὺ τὴν πτωχείαν. Ἀλλὰ βασιλεύει πάσης τῆς κτίσεως ὁ δι’ ἡμᾶς πτωχεύσας. Οὐκοῦν ἐὰν πτωχεύσαντι συμπτωχεύσῃς, καὶ βασιλεύοντι συμβασιλεύσεις. Μακάριοι γὰρ οἱ πτωχοὶ τῷ πνεύματι, ὅτι αὐτῶν ἐστιν ἡ βασιλεία τῶν οὐρανῶν, ἧς καὶ ἡμεῖς ἀξιωθείημεν ἐν Χριστῷ Ἰησοῦ τῷ Κυρίῳ ἡμῶν, ᾧ ἡ δόξα καὶ τὸ κράτος, εἰς τοὺς αἰῶνας τῶν αἰώνων. Ἀμήν.
     `;
 
+      function appendTokenizedContent(targetElement, text) {
+        // Regex captures words (including Greek polytonic characters) vs everything else
+        const tokens = text.split(/([A-Za-z\u0370-\u03FF\u1F00-\u1FFF]+)/g);
+
+        tokens.forEach((token) => {
+          // Test if token is a Greek/Latin character word
+          if (/^[A-Za-z\u0370-\u03FF\u1F00-\u1FFF]+$/.test(token)) {
+            const link = document.createElement("a");
+            link.className = "lsj-word";
+            link.textContent = token;
+
+            // Route to Logeion dictionary which parses inflected forms flawlessly
+            link.href = `https://logeion.uchicago.edu/${encodeURIComponent(token.toLowerCase())}`;
+            link.target = "_blank"; // Opens in a new tab
+
+            targetElement.appendChild(link);
+          } else {
+            // Append spacing and punctuation as normal text node
+            targetElement.appendChild(document.createTextNode(token));
+          }
+        });
+      }
+
+      function splitIntoSentences(text) {
+        const normalized = text.replace(/\s+/g, " ").trim();
+        if (!normalized) return [];
+
+        // Keep sentence boundaries deterministic using punctuation-based splitting.
+        return normalized
+          .split(/(?<=[\.;!?;])\s+/u)
+          .map((part) => part.trim())
+          .filter(Boolean);
+      }
+
       function processText(text) {
         const container = document.getElementById("text-content");
-        const paragraphs = text.trim().split("\n\n");
+        container.classList.add("sentence-numbered-text");
 
-        paragraphs.forEach((para) => {
-          let targetElement;
-          let paraText = para.trim();
+        const paragraphs = text.trim().split(/\n\s*\n/);
 
-          // Check if paragraph is marked as a blockquote
-          if (paraText.startsWith("[quote]") && paraText.endsWith("[/quote]")) {
-            targetElement = document.createElement("blockquote");
+        paragraphs.forEach((paragraph) => {
+          let paraText = paragraph.trim();
+          if (!paraText) return;
+
+          const isQuote =
+            paraText.startsWith("[quote]") && paraText.endsWith("[/quote]");
+
+          if (isQuote) {
             paraText = paraText
-              .replace("[quote]", "")
-              .replace("[/quote]", "")
+              .replace(/^\[quote\]/, "")
+              .replace(/\[\/quote\]$/, "")
               .trim();
-          } else {
-            targetElement = document.createElement("p");
           }
 
-          // Regex captures words (including Greek polytonic characters) vs everything else
-          const tokens = paraText.split(
-            /([A-Za-z\u0370-\u03FF\u1F00-\u1FFF]+)/g,
-          );
+          const sentences = splitIntoSentences(paraText);
 
-          tokens.forEach((token) => {
-            // Test if token is a Greek/Latin character word
-            if (/^[A-Za-z\u0370-\u03FF\u1F00-\u1FFF]+$/.test(token)) {
-              const link = document.createElement("a");
-              link.className = "lsj-word";
-              link.textContent = token;
+          const paragraphContainer = document.createElement("div");
+          paragraphContainer.className = "text-paragraph";
 
-              // Route to Logeion dictionary which parses inflected forms flawlessly
-              link.href = `https://logeion.uchicago.edu/${encodeURIComponent(token.toLowerCase())}`;
-              link.target = "_blank"; // Opens in a new tab
+          if (isQuote) {
+            paragraphContainer.classList.add("quote");
+          }
 
-              targetElement.appendChild(link);
-            } else {
-              // Append spacing and punctuation as normal text node
-              targetElement.appendChild(document.createTextNode(token));
-            }
+          sentences.forEach((sentenceText) => {
+            const sentence = document.createElement("span");
+            sentence.className = "sentence";
+
+            const content = document.createElement("span");
+            content.className = "sentence-content";
+            appendTokenizedContent(content, sentenceText);
+
+            sentence.appendChild(content);
+            paragraphContainer.appendChild(sentence);
           });
 
-          container.appendChild(targetElement);
+          container.appendChild(paragraphContainer);
         });
       }
 
