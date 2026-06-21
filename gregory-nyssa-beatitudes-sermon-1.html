@@ -8,6 +8,18 @@
       the Beatitudes, Sermon 1)
     </title>
     <style>
+      /* SBL Greek webfont: start */
+      @font-face {
+        font-family: "SBL Greek";
+        src:
+          url("fonts/SBL_grk.woff") format("woff"),
+          url("fonts/SBL_grk.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+      }
+      /* SBL Greek webfont: end */
+
       :root {
         --bg-color: #fbf9f4;
         --text-color: #2c2520;
@@ -15,10 +27,11 @@
         --link-hover-bg: #eadecc;
         --accent-color: #8b263e;
         --card-bg: #ffffff;
+        --greek-font: "Georgia", "Times New Roman", serif;
       }
 
       body {
-        font-family: "Palatino", "Georgia", "Times New Roman", serif;
+        font-family: "Georgia", "Times New Roman", serif;
         background-color: var(--bg-color);
         color: var(--text-color);
         line-height: 1.8;
@@ -26,6 +39,12 @@
         padding: 40px 20px;
         display: flex;
         justify-content: center;
+      }
+
+      header,
+      #text-content,
+      #text-content .lsj-word {
+        font-family: var(--greek-font);
       }
 
       .container {
@@ -59,7 +78,6 @@
       }
 
       blockquote {
-        font-style: italic;
         border-left: 3px solid var(--accent-color);
         margin: 30px 0;
         padding-left: 20px;
