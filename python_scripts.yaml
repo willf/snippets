@@ -29,9 +29,6 @@ scripts:
   - filename: similar_by_cluster.py
     description: Find similar records using cluster-based comparisons.
     show_on_index: true
-  - filename: sqlite_to_jsonl.py
-    description: Export rows from the minutes database as JSONL.
-    show_on_index: true
   - filename: upload_hf_images.py
     description: Upload a local image folder as a Hugging Face dataset.
     show_on_index: true
