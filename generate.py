@@ -9,7 +9,14 @@ an index page listing all available snippets.
 import os
 import re
 from datetime import datetime
+from html import escape
 from pathlib import Path
+
+import yaml
+
+
+GITHUB_SOURCE_BASE = "https://github.com/willf/snippets/blob/main"
+PYTHON_SCRIPTS_MANIFEST = "python_scripts.yaml"
 
 
 def extract_title_from_html(filepath):
@@ -104,7 +111,20 @@ def find_html_snippets(directory="."):
     return snippets
 
 
-def generate_index_html(snippets, output_file="index.html"):
+def find_python_scripts(directory="."):
+    """Load Python script metadata and return entries enabled for the index."""
+    manifest_path = os.path.join(directory, PYTHON_SCRIPTS_MANIFEST)
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        manifest = yaml.safe_load(f) or {}
+
+    return [
+        (script["filename"], script.get("description", ""))
+        for script in manifest.get("scripts", [])
+        if script.get("show_on_index", False)
+    ]
+
+
+def generate_index_html(snippets, python_scripts, output_file="index.html"):
     """
     Generate the index.html file from the list of snippets.
 
@@ -281,6 +301,62 @@ def generate_index_html(snippets, output_file="index.html"):
             width: calc(100% - 48px);
         }}
 
+        .resource-section {{
+            border-top: 2px solid var(--ink);
+            margin-top: 54px;
+            padding-top: 24px;
+        }}
+
+        .resource-heading {{
+            align-items: baseline;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }}
+
+        .resource-heading h2 {{
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 2rem;
+            font-weight: 400;
+        }}
+
+        .resource-heading p {{
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }}
+
+        .scripts-list {{
+            display: grid;
+            gap: 0 28px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            list-style: none;
+        }}
+
+        .script-item {{
+            border-bottom: 1px solid var(--line);
+            padding: 16px 0 18px;
+        }}
+
+        .script-item a {{
+            color: var(--ink);
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 0.92rem;
+            text-decoration: none;
+        }}
+
+        .script-item a:hover {{
+            color: var(--teal);
+        }}
+
+        .script-description {{
+            color: var(--muted);
+            font-size: 0.82rem;
+            margin-top: 6px;
+        }}
+
         .empty-state {{
             text-align: center;
             padding: 60px 20px;
@@ -330,6 +406,10 @@ def generate_index_html(snippets, output_file="index.html"):
                 grid-template-columns: 1fr;
             }}
 
+            .scripts-list {{
+                grid-template-columns: 1fr;
+            }}
+
             .snippet-item {{
                 min-height: 170px;
                 padding: 20px;
@@ -361,6 +441,8 @@ def generate_index_html(snippets, output_file="index.html"):
             </div>
 
             {snippets_content}
+
+            {python_scripts_content}
         </div>
 
         <footer>
@@ -396,12 +478,34 @@ def generate_index_html(snippets, output_file="index.html"):
                 <p>Add HTML files to this directory and run generate.py again.</p>
             </div>"""
 
+    python_scripts_html = f"""            <section class="resource-section">
+                <div class="resource-heading">
+                    <h2>Python scripts</h2>
+                    <p>{len(python_scripts)} source files</p>
+                </div>
+                <ul class="scripts-list">
+"""
+    for filename, description in python_scripts:
+        source_url = f"{GITHUB_SOURCE_BASE}/{filename}"
+        python_scripts_html += (
+            '                    <li class="script-item">\n'
+            f'                        <a href="{source_url}" target="_blank" rel="noopener">'
+            f"{escape(filename)}</a>\n"
+        )
+        if description:
+            python_scripts_html += f'                        <p class="script-description">{escape(description)}</p>\n'
+        python_scripts_html += "                    </li>\n"
+    python_scripts_html += "                </ul>\n            </section>"
+
     # Generate timestamp
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Fill in the template
     html_content = html_template.format(
-        snippet_count=snippet_count, snippets_content=snippets_html, timestamp=timestamp
+        snippet_count=snippet_count,
+        snippets_content=snippets_html,
+        python_scripts_content=python_scripts_html,
+        timestamp=timestamp,
     )
 
     # Write to file
@@ -415,13 +519,14 @@ def main():
     """Main function to generate the index."""
     print("Scanning for HTML snippets...")
     snippets = find_html_snippets()
+    python_scripts = find_python_scripts()
 
     print(f"Found {len(snippets)} snippet(s)")
     for filename, title, _ in snippets:
         print(f"  - {filename}: {title}")
-
+    print(f"Found {len(python_scripts)} Python script(s) for the index")
     print("\nGenerating index.html...")
-    generate_index_html(snippets)
+    generate_index_html(snippets, python_scripts)
     print("\nDone!")
 
 

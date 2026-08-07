@@ -167,6 +167,62 @@
             width: calc(100% - 48px);
         }
 
+        .resource-section {
+            border-top: 2px solid var(--ink);
+            margin-top: 54px;
+            padding-top: 24px;
+        }
+
+        .resource-heading {
+            align-items: baseline;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .resource-heading h2 {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 2rem;
+            font-weight: 400;
+        }
+
+        .resource-heading p {
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .scripts-list {
+            display: grid;
+            gap: 0 28px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            list-style: none;
+        }
+
+        .script-item {
+            border-bottom: 1px solid var(--line);
+            padding: 16px 0 18px;
+        }
+
+        .script-item a {
+            color: var(--ink);
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 0.92rem;
+            text-decoration: none;
+        }
+
+        .script-item a:hover {
+            color: var(--teal);
+        }
+
+        .script-description {
+            color: var(--muted);
+            font-size: 0.82rem;
+            margin-top: 6px;
+        }
+
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -213,6 +269,10 @@
             }
 
             .snippets-list {
+                grid-template-columns: 1fr;
+            }
+
+            .scripts-list {
                 grid-template-columns: 1fr;
             }
 
@@ -319,10 +379,71 @@
                     <span class="snippet-filename">treebank_viewer.html</span>
                 </li>
             </ul>
+
+                        <section class="resource-section">
+                <div class="resource-heading">
+                    <h2>Python scripts</h2>
+                    <p>13 source files</p>
+                </div>
+                <ul class="scripts-list">
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/combine_docs.py" target="_blank" rel="noopener">combine_docs.py</a>
+                        <p class="script-description">Combine sequential Markdown files and add page markers.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/configure_sbl_greek_font.py" target="_blank" rel="noopener">configure_sbl_greek_font.py</a>
+                        <p class="script-description">Configure the SBL Greek font for local text and document workflows.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/find_dupes.py" target="_blank" rel="noopener">find_dupes.py</a>
+                        <p class="script-description">Cluster likely duplicate names from JSONL input and write CSV results.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/generate.py" target="_blank" rel="noopener">generate.py</a>
+                        <p class="script-description">Regenerate this index page from the repository&#x27;s HTML snippets and script manifest.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/generate_pdf_from_html_page.py" target="_blank" rel="noopener">generate_pdf_from_html_page.py</a>
+                        <p class="script-description">Generate a PDF from a local HTML page.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/get_songs_by_leader.py" target="_blank" rel="noopener">get_songs_by_leader.py</a>
+                        <p class="script-description">Query Sacred Harp song and leader relationships from the minutes database.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/hf_pipe.py" target="_blank" rel="noopener">hf_pipe.py</a>
+                        <p class="script-description">Run Hugging Face pipeline experiments from the command line.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/lyrics_to_json.py" target="_blank" rel="noopener">lyrics_to_json.py</a>
+                        <p class="script-description">Merge song metadata and text files into JSONL output.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/scrape_fasola_minutes.py" target="_blank" rel="noopener">scrape_fasola_minutes.py</a>
+                        <p class="script-description">Scrape Fasola minutes pages and write CSV summaries.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/similar_by_cluster.py" target="_blank" rel="noopener">similar_by_cluster.py</a>
+                        <p class="script-description">Find similar records using cluster-based comparisons.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/sqlite_to_jsonl.py" target="_blank" rel="noopener">sqlite_to_jsonl.py</a>
+                        <p class="script-description">Export rows from the minutes database as JSONL.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/upload_hf_images.py" target="_blank" rel="noopener">upload_hf_images.py</a>
+                        <p class="script-description">Upload a local image folder as a Hugging Face dataset.</p>
+                    </li>
+                    <li class="script-item">
+                        <a href="https://github.com/willf/snippets/blob/main/ytplaylist_to_md.py" target="_blank" rel="noopener">ytplaylist_to_md.py</a>
+                        <p class="script-description">Turn a YouTube playlist into tab-separated Markdown-like output.</p>
+                    </li>
+                </ul>
+            </section>
         </div>
 
         <footer>
-            <p>Generated on 2026-08-07 10:14:08 | <a href="https://github.com/willf/snippets" target="_blank">View on GitHub</a></p>
+            <p>Generated on 2026-08-07 10:24:12 | <a href="https://github.com/willf/snippets" target="_blank">View on GitHub</a></p>
         </footer>
     </div>
 </body>

@@ -1,0 +1,40 @@
+scripts:
+  - filename: combine_docs.py
+    description: Combine sequential Markdown files and add page markers.
+    show_on_index: true
+  - filename: configure_sbl_greek_font.py
+    description: Configure the SBL Greek font for local text and document workflows.
+    show_on_index: true
+  - filename: find_dupes.py
+    description: Cluster likely duplicate names from JSONL input and write CSV results.
+    show_on_index: true
+  - filename: generate.py
+    description: Regenerate this index page from the repository's HTML snippets and script manifest.
+    show_on_index: true
+  - filename: generate_pdf_from_html_page.py
+    description: Generate a PDF from a local HTML page.
+    show_on_index: true
+  - filename: get_songs_by_leader.py
+    description: Query Sacred Harp song and leader relationships from the minutes database.
+    show_on_index: true
+  - filename: hf_pipe.py
+    description: Run Hugging Face pipeline experiments from the command line.
+    show_on_index: true
+  - filename: lyrics_to_json.py
+    description: Merge song metadata and text files into JSONL output.
+    show_on_index: true
+  - filename: scrape_fasola_minutes.py
+    description: Scrape Fasola minutes pages and write CSV summaries.
+    show_on_index: true
+  - filename: similar_by_cluster.py
+    description: Find similar records using cluster-based comparisons.
+    show_on_index: true
+  - filename: sqlite_to_jsonl.py
+    description: Export rows from the minutes database as JSONL.
+    show_on_index: true
+  - filename: upload_hf_images.py
+    description: Upload a local image folder as a Hugging Face dataset.
+    show_on_index: true
+  - filename: ytplaylist_to_md.py
+    description: Turn a YouTube playlist into tab-separated Markdown-like output.
+    show_on_index: true
