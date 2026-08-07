@@ -2,6 +2,8 @@
 
 A place to share snippets of code and small one-page apps, by Will Fitzgerald.
 
+See also: [Snippets](https://willf.github.io/snippets/) on GitHub pages.
+
 ## Structure
 
 - **`index.html`** - Auto-generated index page that lists all available snippets
