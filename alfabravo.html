@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta Description for Search Engine Snippets -->
+    <meta name="description" content="Instantly translate any text into the standard ICAO / NATO aviation phonetic alphabet. Easily convert phrases into Alfa Bravo Charlie format.">
     <title>Aviation Phonetic Translator</title>
     <style>
         :root {
             --bg-color: #f4f7f6;
             --text-color: #333;
+            --text-muted: #6b7280;
             --accent-color: #0056b3;
             --card-bg: #ffffff;
             --border-color: #d1d5db;
@@ -41,8 +44,15 @@
         h1 {
             text-align: center;
             font-size: 1.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             color: var(--accent-color);
+        }
+
+        .description-snippet {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
         }
 
         .input-group {
@@ -177,6 +187,7 @@
 
 <div class="container">
     <h1>Phonetic Translator</h1>
+    <p class="description-snippet">Instantly translate any text into the standard ICAO aviation phonetic alphabet.</p>
     
     <!-- Input Section -->
     <div class="input-group">
