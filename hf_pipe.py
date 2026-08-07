@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "datasets>=4.6.0",
+#     "rich>=14.2.0",
+# ]
+# ///
+
 import argparse
 import json
 import sys

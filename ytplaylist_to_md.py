@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "yt-dlp>=2026.2.21",
+# ]
+# ///
+
 import yt_dlp
 
 

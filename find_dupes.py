@@ -1,25 +1,35 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "rapidfuzz>=3.14.3",
+# ]
+# ///
+
 import sys
 import json
 import csv
 import rapidfuzz
+
 
 def get_sort_key(item):
     """
     Sorts by Last Name, then First Name.
     Item is a tuple: (original_index, record_dict)
     """
-    name = item[1].get('name', '').lower().strip()
+    name = item[1].get("name", "").lower().strip()
     parts = name.split()
     if parts:
         # Returns "Solheim Jim" for "Jim Solheim"
         return parts[-1] + " " + parts[0]
     return name
 
+
 def last_name_first(name):
     parts = name.lower().strip().split()
     if parts:
         return parts[-1] + " " + parts[0]
     return name.lower().strip()
+
 
 def solve_connected_components(num_records, edges):
     """
@@ -64,6 +74,7 @@ def solve_connected_components(num_records, edges):
 
     return cluster_map
 
+
 def main():
     records = []
 
@@ -75,7 +86,7 @@ def main():
             if line:
                 try:
                     data = json.loads(line)
-                    if 'name' in data:
+                    if "name" in data:
                         records.append(data)
                 except json.JSONDecodeError:
                     continue
@@ -95,18 +106,26 @@ def main():
     n = len(sorted_records)
     for i in range(n):
         idx_a, record_a = sorted_records[i]
-        name_a = record_a.get('name', '')
+        name_a = record_a.get("name", "")
 
         for j in range(i + 1, min(i + window_size, n)):
             idx_b, record_b = sorted_records[j]
-            name_b = record_b.get('name', '')
+            name_b = record_b.get("name", "")
 
             if name_a == name_b:
                 score = 100
             else:
                 score_0 = rapidfuzz.fuzz.token_sort_ratio(name_a, name_b)
-                score_1 = rapidfuzz.distance.JaroWinkler.normalized_similarity(name_a, name_b) * 100
-                score_2 = rapidfuzz.distance.Levenshtein.normalized_similarity(last_name_first(name_a), last_name_first(name_b)) * 100
+                score_1 = (
+                    rapidfuzz.distance.JaroWinkler.normalized_similarity(name_a, name_b)
+                    * 100
+                )
+                score_2 = (
+                    rapidfuzz.distance.Levenshtein.normalized_similarity(
+                        last_name_first(name_a), last_name_first(name_b)
+                    )
+                    * 100
+                )
                 score = max(score_0, score_1, score_2)
 
             if score >= threshold:
@@ -117,11 +136,11 @@ def main():
 
     # 5. Output CSV
     # We define the columns: Cluster ID, Name, and then any other fields found in the data
-    fieldnames = ['Cluster_ID', 'name']
+    fieldnames = ["Cluster_ID", "name"]
 
     # Add other keys from the first record just to be helpful (optional)
     if records:
-        extra_keys = [k for k in records[0].keys() if k != 'name']
+        extra_keys = [k for k in records[0].keys() if k != "name"]
         fieldnames.extend(extra_keys)
 
     writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
@@ -132,11 +151,12 @@ def main():
 
         # Only output records that are part of a duplicate cluster
         if c_id is not None:
-            out_row = {'Cluster_ID': c_id, 'name': record['name']}
+            out_row = {"Cluster_ID": c_id, "name": record["name"]}
             # Fill in extra data
             for k in extra_keys:
-                out_row[k] = record.get(k, '')
+                out_row[k] = record.get(k, "")
             writer.writerow(out_row)
+
 
 if __name__ == "__main__":
     main()

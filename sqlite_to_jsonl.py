@@ -1,6 +1,6 @@
 import sqlite3
 import json
-import sys
+
 
 def export_jsonl(db_path, query, output_file):
     # 1. Connect to the database
@@ -14,7 +14,7 @@ def export_jsonl(db_path, query, output_file):
     cursor.execute(query)
 
     # 3. Stream results to file
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         # Iterating the cursor fetches rows one by one (generator)
         # instead of loading all 22k+ rows into RAM at once.
         for row in cursor:
@@ -22,15 +22,16 @@ def export_jsonl(db_path, query, output_file):
             row_dict = dict(row)
 
             # Dump to JSON and write with a newline
-            f.write(json.dumps(row_dict) + '\n')
+            f.write(json.dumps(row_dict) + "\n")
 
     conn.close()
     print(f"Successfully exported query to {output_file}")
 
+
 if __name__ == "__main__":
     # Configuration
-    DATABASE = 'minutes.db'
+    DATABASE = "minutes.db"
     QUERY = "SELECT * FROM leaders"
-    OUTPUT = 'names.jsonl'
+    OUTPUT = "names.jsonl"
 
     export_jsonl(DATABASE, QUERY, OUTPUT)
