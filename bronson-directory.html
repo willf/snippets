@@ -1,439 +1,662 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hospital Directory</title>
-    
+    <meta
+      name="description"
+      content="I hate how the Bronson directory looks. This is a attempt at a revamp."
+    />
     <style>
-        /* Semantic CSS Variables for Theme */
-        :root {
-            --bg-main: #f4f4f4;
-            --bg-white: #ffffff;
-            --bg-gray-light: #f3f4f6;
-            --bg-gray-med: #e5e7eb;
-            --bg-gray-dark: #d1d5db;
-            --text-dark: #000000;
-            --text-gray-dark: #1f2937;
-            --text-gray-med: #374151;
-            --text-gray-light: #4b5563;
-            --text-gray-lighter: #6b7280;
-            --border-color: #d1d5db;
-            --border-dark: #9ca3af;
-            --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-        }
+      /* Semantic CSS Variables for Theme */
+      :root {
+        --bg-main: #f4f4f4;
+        --bg-white: #ffffff;
+        --bg-gray-light: #f3f4f6;
+        --bg-gray-med: #e5e7eb;
+        --bg-gray-dark: #d1d5db;
+        --text-dark: #000000;
+        --text-gray-dark: #1f2937;
+        --text-gray-med: #374151;
+        --text-gray-light: #4b5563;
+        --text-gray-lighter: #6b7280;
+        --border-color: #d1d5db;
+        --border-dark: #9ca3af;
+        --font-sans:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --font-serif:
+          ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+      }
 
-        /* Base Resets */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+      /* Base Resets */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-main);
-            color: var(--text-gray-dark);
-            font-family: var(--font-sans);
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg-main);
+        color: var(--text-gray-dark);
+        font-family: var(--font-sans);
+      }
 
-        /* Layout Structure */
-        .app-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-height: 100vh;
-            overflow: hidden;
-        }
+      /* Layout Structure */
+      .app-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
+      }
 
-        /* Header */
-        .site-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 1.5rem 3rem;
-            flex-shrink: 0;
-        }
+      /* Header */
+      .site-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 1.5rem 3rem;
+        flex-shrink: 0;
+      }
 
-        .site-title {
-            font-size: 1.875rem;
-            font-family: var(--font-serif);
-            color: var(--text-gray-med);
-            letter-spacing: 0.025em;
-            margin: 0;
-            font-weight: normal;
-        }
+      .site-title {
+        font-size: 1.875rem;
+        font-family: var(--font-serif);
+        color: var(--text-gray-med);
+        letter-spacing: 0.025em;
+        margin: 0;
+        font-weight: normal;
+      }
 
-        .datetime-display {
-            font-size: 1.5rem;
-            color: var(--text-gray-med);
-            font-family: var(--font-serif);
-        }
+      .datetime-display {
+        font-size: 1.5rem;
+        color: var(--text-gray-med);
+        font-family: var(--font-serif);
+      }
 
-        /* Main Content */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            overflow: hidden;
-            padding: 0 2rem 1rem;
-        }
+      /* Main Content */
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+        padding: 0 2rem 1rem;
+      }
 
-        /* Map Section */
-        .map-section {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: stretch;
-            margin-bottom: 1.5rem;
-            height: 33.333333%;
-            flex-shrink: 0;
-            background-color: var(--bg-white);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 0.125rem;
-        }
+      /* Map Section */
+      .map-section {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: stretch;
+        margin-bottom: 1.5rem;
+        height: 33.333333%;
+        flex-shrink: 0;
+        background-color: var(--bg-white);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 0.125rem;
+      }
 
-        .map-graphic-container {
-            flex: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            border-right: 1px solid var(--border-color);
-            background-color: var(--bg-white);
-        }
+      .map-graphic-container {
+        flex: 1;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        border-right: 1px solid var(--border-color);
+        background-color: var(--bg-white);
+      }
 
-        .map-svg {
-            width: 100%;
-            height: 100%;
-            max-height: 250px;
-            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.05));
-        }
+      .map-svg {
+        width: 100%;
+        height: 100%;
+        max-height: 250px;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+      }
 
-        .map-legend {
-            width: 450px;
-            padding: 1.5rem;
-            overflow-y: auto;
-            font-size: 0.875rem;
-        }
+      .map-legend {
+        width: 450px;
+        padding: 1.5rem;
+        overflow-y: auto;
+        font-size: 0.875rem;
+      }
 
-        .legend-title {
-            font-weight: 600;
-            color: var(--text-gray-med);
-            margin-top: 0;
-            margin-bottom: 0.75rem;
-            border-bottom: 1px solid var(--bg-gray-med);
-            padding-bottom: 0.25rem;
-        }
+      .legend-title {
+        font-weight: 600;
+        color: var(--text-gray-med);
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+        border-bottom: 1px solid var(--bg-gray-med);
+        padding-bottom: 0.25rem;
+      }
 
-        .legend-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+      .legend-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
 
-        .legend-item {
-            display: flex;
-            align-items: flex-start;
-        }
+      .legend-item {
+        display: flex;
+        align-items: flex-start;
+      }
 
-        .legend-key {
-            font-weight: 700;
-            color: var(--text-gray-dark);
-            width: 1.5rem;
-            flex-shrink: 0;
-        }
+      .legend-key {
+        font-weight: 700;
+        color: var(--text-gray-dark);
+        width: 1.5rem;
+        flex-shrink: 0;
+      }
 
-        .legend-desc {
-            color: var(--text-gray-light);
-        }
+      .legend-desc {
+        color: var(--text-gray-light);
+      }
 
-        /* Directory Section */
-        .directory-section {
-            flex: 1;
-            overflow: hidden;
-            background-color: var(--bg-white);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            border-radius: 0.125rem;
-        }
+      /* Directory Section */
+      .directory-section {
+        flex: 1;
+        overflow: hidden;
+        background-color: var(--bg-white);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        border-radius: 0.125rem;
+      }
 
-        .directory-header {
-            background-color: var(--bg-gray-med);
-            padding: 0.75rem 1.5rem;
-            border-bottom: 2px solid var(--border-dark);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+      .directory-header {
+        background-color: var(--bg-gray-med);
+        padding: 0.75rem 1.5rem;
+        border-bottom: 2px solid var(--border-dark);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-        .directory-title {
-            font-weight: 600;
-            color: var(--text-gray-dark);
-            font-size: 1.125rem;
-            margin: 0;
-        }
+      .directory-title {
+        font-weight: 600;
+        color: var(--text-gray-dark);
+        font-size: 1.125rem;
+        margin: 0;
+      }
 
-        .directory-list-wrapper {
-            flex: 1;
-            overflow: auto;
-        }
+      .directory-list-wrapper {
+        flex: 1;
+        overflow: auto;
+      }
 
-        .directory-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-        }
+      .directory-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
 
-        .directory-item {
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
-            transition: background-color 0.15s ease-in-out;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+      .directory-item {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 1.5rem;
+        transition: background-color 0.15s ease-in-out;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
 
-        .directory-item:nth-child(even) {
-            background-color: var(--bg-gray-light);
-        }
+      .directory-item:nth-child(even) {
+        background-color: var(--bg-gray-light);
+      }
 
-        .directory-item:hover {
-            background-color: var(--bg-gray-dark);
-        }
+      .directory-item:hover {
+        background-color: var(--bg-gray-dark);
+      }
 
-        .practice-name {
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 1.125rem;
-            margin: 0;
-        }
+      .practice-name {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 1.125rem;
+        margin: 0;
+      }
 
-        .practice-details {
-            font-size: 0.9375rem;
-            font-weight: 400;
-            color: var(--text-gray-med);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+      .practice-details {
+        font-size: 0.9375rem;
+        font-weight: 400;
+        color: var(--text-gray-med);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
 
-        .badge-building {
-            background-color: var(--bg-gray-dark);
-            color: var(--text-dark);
-            padding: 0.125rem 0.625rem;
-            border-radius: 0.125rem;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
+      .badge-building {
+        background-color: var(--bg-gray-dark);
+        color: var(--text-dark);
+        padding: 0.125rem 0.625rem;
+        border-radius: 0.125rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+      }
 
-        .detail-separator {
-            color: var(--text-gray-lighter);
-        }
+      .detail-separator {
+        color: var(--text-gray-lighter);
+      }
 
-        .detail-suite {
-            color: var(--text-dark);
-            font-weight: 600;
-        }
+      .detail-suite {
+        color: var(--text-dark);
+        font-weight: 600;
+      }
 
-        /* Footer */
-        .site-footer {
-            margin-top: 1rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-            font-size: 0.875rem;
-            color: var(--text-gray-light);
-            flex-shrink: 0;
-            font-weight: 500;
-            letter-spacing: 0.025em;
-            padding-bottom: 0.5rem;
-        }
+      /* Footer */
+      .site-footer {
+        margin-top: 1rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border-color);
+        text-align: center;
+        font-size: 0.875rem;
+        color: var(--text-gray-light);
+        flex-shrink: 0;
+        font-weight: 500;
+        letter-spacing: 0.025em;
+        padding-bottom: 0.5rem;
+      }
     </style>
-</head>
-<body>
-    
+  </head>
+  <body>
     <div class="app-wrapper">
-      
-        <!-- Header -->
-        <header class="site-header">
-          <h1 class="site-title">Hospital Directory</h1>
-          <div class="datetime-display" id="datetime-display">
-            November, 4th 2025 &nbsp;&nbsp; 7:06 pm
+      <!-- Header -->
+      <header class="site-header">
+        <h1 class="site-title">Hospital Directory</h1>
+        <div class="datetime-display" id="datetime-display">
+          November, 4th 2025 &nbsp;&nbsp; 7:06 pm
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <!-- Map & Legend Section -->
+        <section class="map-section">
+          <!-- Map Graphic Area -->
+          <div class="map-graphic-container">
+            <svg viewBox="0 0 500 300" class="map-svg">
+              <!-- Simplified building shapes resembling the original blueprint -->
+              <g stroke="#000000" stroke-width="2" fill="#ffffff">
+                <!-- MOP Main Layout -->
+                <rect
+                  x="100"
+                  y="80"
+                  width="220"
+                  height="150"
+                  fill="#ffffff"
+                ></rect>
+                <rect x="100" y="80" width="60" height="80"></rect>
+                <rect x="160" y="80" width="100" height="80"></rect>
+                <rect x="260" y="80" width="60" height="80"></rect>
+                <rect x="100" y="160" width="73" height="70"></rect>
+                <rect x="173" y="160" width="74" height="70"></rect>
+                <rect x="247" y="160" width="73" height="70"></rect>
+
+                <!-- Corridors / Atrium -->
+                <path
+                  d="M 320 120 L 370 120 L 370 100 L 320 100 Z"
+                  fill="#e5e7eb"
+                ></path>
+
+                <!-- West Pavilion & East Pavilion rough shapes -->
+                <polygon
+                  points="370,140 430,140 430,70 390,70 370,90"
+                  fill="#f3f4f6"
+                ></polygon>
+                <rect
+                  x="420"
+                  y="50"
+                  width="50"
+                  height="60"
+                  fill="#f3f4f6"
+                ></rect>
+              </g>
+
+              <!-- Labels -->
+              <g
+                fill="#000000"
+                font-size="14"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                <!-- Top row MOP -->
+                <text x="130" y="125">J</text>
+                <text x="210" y="125">I</text>
+                <!-- Bottom row MOP -->
+                <text x="136" y="200">B</text>
+                <text x="210" y="200">A</text>
+                <text x="283" y="200">C</text>
+
+                <!-- Atrium & Others -->
+                <text x="345" y="115">E</text>
+                <text x="400" y="115">H</text>
+              </g>
+
+              <g fill="#000000" font-size="12" text-anchor="middle">
+                <text x="210" y="250" font-weight="600" letter-spacing="0.05em">
+                  MEDICAL OFFICE PAVILION
+                </text>
+                <text x="345" y="90" font-size="10">Garden</text>
+                <text x="345" y="102" font-size="10">Atrium</text>
+                <text x="400" y="160" font-size="10">West Pavilion</text>
+                <text x="445" y="40" font-size="10">East Pavilion</text>
+                <text x="60" y="130" font-size="10">Parking Ramp</text>
+              </g>
+            </svg>
           </div>
-        </header>
-  
-        <!-- Main Content Area -->
-        <main class="main-content">
-          
-          <!-- Map & Legend Section -->
-          <section class="map-section">
-            
-            <!-- Map Graphic Area -->
-            <div class="map-graphic-container">
-              <svg viewBox="0 0 500 300" class="map-svg">
-                <!-- Simplified building shapes resembling the original blueprint -->
-                <g stroke="#000000" stroke-width="2" fill="#ffffff">
-                  <!-- MOP Main Layout -->
-                  <rect x="100" y="80" width="220" height="150" fill="#ffffff"></rect>
-                  <rect x="100" y="80" width="60" height="80"></rect>
-                  <rect x="160" y="80" width="100" height="80"></rect>
-                  <rect x="260" y="80" width="60" height="80"></rect>
-                  <rect x="100" y="160" width="73" height="70"></rect>
-                  <rect x="173" y="160" width="74" height="70"></rect>
-                  <rect x="247" y="160" width="73" height="70"></rect>
-                  
-                  <!-- Corridors / Atrium -->
-                  <path d="M 320 120 L 370 120 L 370 100 L 320 100 Z" fill="#e5e7eb"></path>
-                  
-                  <!-- West Pavilion & East Pavilion rough shapes -->
-                  <polygon points="370,140 430,140 430,70 390,70 370,90" fill="#f3f4f6"></polygon>
-                  <rect x="420" y="50" width="50" height="60" fill="#f3f4f6"></rect>
-                </g>
-  
-                <!-- Labels -->
-                <g fill="#000000" font-size="14" font-weight="bold" text-anchor="middle">
-                  <!-- Top row MOP -->
-                  <text x="130" y="125">J</text>
-                  <text x="210" y="125">I</text>
-                  <!-- Bottom row MOP -->
-                  <text x="136" y="200">B</text>
-                  <text x="210" y="200">A</text>
-                  <text x="283" y="200">C</text>
-                  
-                  <!-- Atrium & Others -->
-                  <text x="345" y="115">E</text>
-                  <text x="400" y="115">H</text>
-                </g>
-                
-                <g fill="#000000" font-size="12" text-anchor="middle">
-                   <text x="210" y="250" font-weight="600" letter-spacing="0.05em">MEDICAL OFFICE PAVILION</text>
-                   <text x="345" y="90" font-size="10">Garden</text>
-                   <text x="345" y="102" font-size="10">Atrium</text>
-                   <text x="400" y="160" font-size="10">West Pavilion</text>
-                   <text x="445" y="40" font-size="10">East Pavilion</text>
-                   <text x="60" y="130" font-size="10">Parking Ramp</text>
-                </g>
-              </svg>
-            </div>
-  
-            <!-- Map Legend -->
-            <aside class="map-legend">
-              <h3 class="legend-title">Garden Entrance</h3>
-              <ul id="map-legend-container" class="legend-list">
-                <!-- Injected via JS -->
-              </ul>
-            </aside>
-          </section>
-  
-          <!-- Directory List Section -->
-          <section class="directory-section">
-            <header class="directory-header">
-              <h2 class="directory-title">Practices & Departments</h2>
-            </header>
-            <div class="directory-list-wrapper">
-              <ul id="directory-list-container" class="directory-list">
-                 <!-- Injected via JS -->
-              </ul>
-            </div>
-          </section>
-          
-          <!-- Footer Legend -->
-          <footer class="site-footer">
-            Directory Legend: &nbsp;&nbsp; WP - West Pavilion &nbsp;&nbsp; EP - East Pavilion &nbsp;&nbsp; MOP - Medical Office Pavilion
-          </footer>
-  
-        </main>
-      </div>
 
-      <script>
-        // Data Configuration
-        const directoryData = [
-            { practice: "Adult Critical Care", building: "MOP", floor: "5th", suite: "M-510" },
-            { practice: "Bronson at Home Infusion Services", building: "MOP", floor: "4th", suite: "M-429" },
-            { practice: "Breast Health Center", building: "MOP", floor: "5th", suite: "M-515" },
-            { practice: "Breast Surgery Specialists", building: "MOP", floor: "5th", suite: "M-515" },
-            { practice: "Burn and Wound Center", building: "WP", floor: "3rd", suite: "W-308" },
-            { practice: "Cardiothoracic Surgery Specialists", building: "MOP", floor: "4th", suite: "M-460" },
-            { practice: "Colon & Rectal Surgery Specialists", building: "MOP", floor: "3rd", suite: "M-302" },
-            { practice: "Constance Brown Hearing Center - John St", building: "MOP", floor: "2nd", suite: "M-273" },
-            { practice: "Endocrine & General Surgery Specialists", building: "MOP", floor: "2nd", suite: "M-283" },
-            { practice: "Family Medicine Downtown", building: "MOP", floor: "Grnd", suite: "M-020" },
-            { practice: "Gastroenterology Specialists", building: "MOP", floor: "3rd", suite: "M-302" },
-            { practice: "Hand & Elbow Surgery Specialists", building: "MOP", floor: "2nd", suite: "M-206C" },
-            { practice: "Infusion Center", building: "WP", floor: "4th", suite: "W-403" },
-            { practice: "Internal Medicine", building: "MOP", floor: "1st", suite: "M-170" },
-            { practice: "Internal Medicine Hospital Specialists", building: "MOP", floor: "3rd", suite: "M-325" },
-            { practice: "Neuroscience Center - Adult & Pediatric Neurology, Neurocritical Care", building: "MOP", floor: "1st", suite: "M-124" },
-            { practice: "Neuroscience Center - Medical Spine", building: "MOP", floor: "1st", suite: "M-124" },
-            { practice: "Neuroscience Center - Neurobehavioral Health, Neurosurgery", building: "MOP", floor: "1st", suite: "M-124" },
-            { practice: "Neuroscience Center - Physical Medicine & Rehabilitation", building: "MOP", floor: "1st", suite: "M-124" },
-            { practice: "Newborn Hospitalist Services", building: "MOP", floor: "3rd", suite: "M-352" },
-            { practice: "Orthopedic & Joint Specialists", building: "MOP", floor: "4th", suite: "M-424" },
-            { practice: "Orthopedic Trauma, Foot & Ankle Specialists", building: "MOP", floor: "4th", suite: "M-401" },
-            { practice: "Otolaryngology, Head & Neck Surgery Specialists", building: "MOP", floor: "2nd", suite: "M-273" },
-            { practice: "Outpatient Nutrition Services", building: "WP", floor: "3rd", suite: "W-308" },
-            { practice: "Pediatric Oncology & Hematology Specialists", building: "MOP", floor: "Grnd", suite: "M-005" },
-            { practice: "Pediatric Specialists - Apnea/Developmental Progress Clinics", building: "MOP", floor: "3rd", suite: "M-351" },
-            { practice: "Pediatric Specialists - Child Advocacy", building: "MOP", floor: "3rd", suite: "M-351" },
-            { practice: "Pediatric Specialists - Pediatric Cardiology, Gastroenterology", building: "MOP", floor: "3rd", suite: "M-351" },
-            { practice: "Pediatric Specialists - Pediatric Nephrology, Echocardiogram", building: "MOP", floor: "3rd", suite: "M-351" },
-            { practice: "Pediatric Specialists - Pediatric Surgery, Urology", building: "MOP", floor: "3rd", suite: "M-351" },
-            { practice: "Rheumatology Specialists", building: "MOP", floor: "Grnd", suite: "M-030" },
-            { practice: "Spine & Scoliosis Specialists", building: "MOP", floor: "2nd", suite: "M-206B" },
-            { practice: "Trauma & Surgery Services", building: "MOP", floor: "3rd", suite: "M-325" },
-            { practice: "Urology & Continence Specialists", building: "MOP", floor: "3rd", suite: "M-318" },
-            { practice: "Vascular & Endovascular Surgery Specialists", building: "MOP", floor: "4th", suite: "M-460" },
-            { practice: "Vein Clinic", building: "MOP", floor: "4th", suite: "M-460" },
-        ];
+          <!-- Map Legend -->
+          <aside class="map-legend">
+            <h3 class="legend-title">Garden Entrance</h3>
+            <ul id="map-legend-container" class="legend-list">
+              <!-- Injected via JS -->
+            </ul>
+          </aside>
+        </section>
 
-        const mapLegend = [
-            { key: "A", desc: "Bronson Family Medicine Downtown (Suite M-020)" },
-            { key: "B", desc: "Bronson Pediatric Hematology/Oncology Center (Suite M-005)" },
-            { key: "C", desc: "Bronson Rheumatology Specialists (Suite M-030)" },
-            { key: "E", desc: "Garden Bistro" },
-            { key: "G", desc: "Medical Records (Suite W-008)" },
-            { key: "H", desc: "Medical Staff Services (Suite W-001)" },
-            { key: "J", desc: "SkyCourt Cafe" },
-            { key: "K", desc: "Travel to North Campus" },
-        ];
+        <!-- Directory List Section -->
+        <section class="directory-section">
+          <header class="directory-header">
+            <h2 class="directory-title">Practices & Departments</h2>
+          </header>
+          <div class="directory-list-wrapper">
+            <ul id="directory-list-container" class="directory-list">
+              <!-- Injected via JS -->
+            </ul>
+          </div>
+        </section>
 
-        // Render Map Legend
-        const legendContainer = document.getElementById('map-legend-container');
-        legendContainer.innerHTML = mapLegend.map(item => `
+        <!-- Footer Legend -->
+        <footer class="site-footer">
+          Directory Legend: &nbsp;&nbsp; WP - West Pavilion &nbsp;&nbsp; EP -
+          East Pavilion &nbsp;&nbsp; MOP - Medical Office Pavilion
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      // Data Configuration
+      const directoryData = [
+        {
+          practice: "Adult Critical Care",
+          building: "MOP",
+          floor: "5th",
+          suite: "M-510",
+        },
+        {
+          practice: "Bronson at Home Infusion Services",
+          building: "MOP",
+          floor: "4th",
+          suite: "M-429",
+        },
+        {
+          practice: "Breast Health Center",
+          building: "MOP",
+          floor: "5th",
+          suite: "M-515",
+        },
+        {
+          practice: "Breast Surgery Specialists",
+          building: "MOP",
+          floor: "5th",
+          suite: "M-515",
+        },
+        {
+          practice: "Burn and Wound Center",
+          building: "WP",
+          floor: "3rd",
+          suite: "W-308",
+        },
+        {
+          practice: "Cardiothoracic Surgery Specialists",
+          building: "MOP",
+          floor: "4th",
+          suite: "M-460",
+        },
+        {
+          practice: "Colon & Rectal Surgery Specialists",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-302",
+        },
+        {
+          practice: "Constance Brown Hearing Center - John St",
+          building: "MOP",
+          floor: "2nd",
+          suite: "M-273",
+        },
+        {
+          practice: "Endocrine & General Surgery Specialists",
+          building: "MOP",
+          floor: "2nd",
+          suite: "M-283",
+        },
+        {
+          practice: "Family Medicine Downtown",
+          building: "MOP",
+          floor: "Grnd",
+          suite: "M-020",
+        },
+        {
+          practice: "Gastroenterology Specialists",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-302",
+        },
+        {
+          practice: "Hand & Elbow Surgery Specialists",
+          building: "MOP",
+          floor: "2nd",
+          suite: "M-206C",
+        },
+        {
+          practice: "Infusion Center",
+          building: "WP",
+          floor: "4th",
+          suite: "W-403",
+        },
+        {
+          practice: "Internal Medicine",
+          building: "MOP",
+          floor: "1st",
+          suite: "M-170",
+        },
+        {
+          practice: "Internal Medicine Hospital Specialists",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-325",
+        },
+        {
+          practice:
+            "Neuroscience Center - Adult & Pediatric Neurology, Neurocritical Care",
+          building: "MOP",
+          floor: "1st",
+          suite: "M-124",
+        },
+        {
+          practice: "Neuroscience Center - Medical Spine",
+          building: "MOP",
+          floor: "1st",
+          suite: "M-124",
+        },
+        {
+          practice:
+            "Neuroscience Center - Neurobehavioral Health, Neurosurgery",
+          building: "MOP",
+          floor: "1st",
+          suite: "M-124",
+        },
+        {
+          practice: "Neuroscience Center - Physical Medicine & Rehabilitation",
+          building: "MOP",
+          floor: "1st",
+          suite: "M-124",
+        },
+        {
+          practice: "Newborn Hospitalist Services",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-352",
+        },
+        {
+          practice: "Orthopedic & Joint Specialists",
+          building: "MOP",
+          floor: "4th",
+          suite: "M-424",
+        },
+        {
+          practice: "Orthopedic Trauma, Foot & Ankle Specialists",
+          building: "MOP",
+          floor: "4th",
+          suite: "M-401",
+        },
+        {
+          practice: "Otolaryngology, Head & Neck Surgery Specialists",
+          building: "MOP",
+          floor: "2nd",
+          suite: "M-273",
+        },
+        {
+          practice: "Outpatient Nutrition Services",
+          building: "WP",
+          floor: "3rd",
+          suite: "W-308",
+        },
+        {
+          practice: "Pediatric Oncology & Hematology Specialists",
+          building: "MOP",
+          floor: "Grnd",
+          suite: "M-005",
+        },
+        {
+          practice:
+            "Pediatric Specialists - Apnea/Developmental Progress Clinics",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-351",
+        },
+        {
+          practice: "Pediatric Specialists - Child Advocacy",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-351",
+        },
+        {
+          practice:
+            "Pediatric Specialists - Pediatric Cardiology, Gastroenterology",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-351",
+        },
+        {
+          practice:
+            "Pediatric Specialists - Pediatric Nephrology, Echocardiogram",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-351",
+        },
+        {
+          practice: "Pediatric Specialists - Pediatric Surgery, Urology",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-351",
+        },
+        {
+          practice: "Rheumatology Specialists",
+          building: "MOP",
+          floor: "Grnd",
+          suite: "M-030",
+        },
+        {
+          practice: "Spine & Scoliosis Specialists",
+          building: "MOP",
+          floor: "2nd",
+          suite: "M-206B",
+        },
+        {
+          practice: "Trauma & Surgery Services",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-325",
+        },
+        {
+          practice: "Urology & Continence Specialists",
+          building: "MOP",
+          floor: "3rd",
+          suite: "M-318",
+        },
+        {
+          practice: "Vascular & Endovascular Surgery Specialists",
+          building: "MOP",
+          floor: "4th",
+          suite: "M-460",
+        },
+        {
+          practice: "Vein Clinic",
+          building: "MOP",
+          floor: "4th",
+          suite: "M-460",
+        },
+      ];
+
+      const mapLegend = [
+        { key: "A", desc: "Bronson Family Medicine Downtown (Suite M-020)" },
+        {
+          key: "B",
+          desc: "Bronson Pediatric Hematology/Oncology Center (Suite M-005)",
+        },
+        { key: "C", desc: "Bronson Rheumatology Specialists (Suite M-030)" },
+        { key: "E", desc: "Garden Bistro" },
+        { key: "G", desc: "Medical Records (Suite W-008)" },
+        { key: "H", desc: "Medical Staff Services (Suite W-001)" },
+        { key: "J", desc: "SkyCourt Cafe" },
+        { key: "K", desc: "Travel to North Campus" },
+      ];
+
+      // Render Map Legend
+      const legendContainer = document.getElementById("map-legend-container");
+      legendContainer.innerHTML = mapLegend
+        .map(
+          (item) => `
             <li class="legend-item">
                 <span class="legend-key">${item.key}</span>
                 <span class="legend-desc">${item.desc}</span>
             </li>
-        `).join('');
+        `,
+        )
+        .join("");
 
-        // Render Directory List
-        const listContainer = document.getElementById('directory-list-container');
-        
-        function renderList(data) {
-            listContainer.innerHTML = data.map((row, idx) => {
-                // Formatting Floor String
-                const floorDisplay = row.floor === 'Grnd' 
-                    ? 'Ground Floor' 
-                    : `Floor ${row.floor.replace(/[^0-9]/g, '')}`;
+      // Render Directory List
+      const listContainer = document.getElementById("directory-list-container");
 
-                return `
+      function renderList(data) {
+        listContainer.innerHTML = data
+          .map((row, idx) => {
+            // Formatting Floor String
+            const floorDisplay =
+              row.floor === "Grnd"
+                ? "Ground Floor"
+                : `Floor ${row.floor.replace(/[^0-9]/g, "")}`;
+
+            return `
                     <li class="directory-item">
                         <h4 class="practice-name">${row.practice}</h4>
                         <div class="practice-details">
@@ -445,12 +668,12 @@
                         </div>
                     </li>
                 `;
-            }).join('');
-        }
+          })
+          .join("");
+      }
 
-        // Initial Render
-        renderList(directoryData);
-
-      </script>
-</body>
+      // Initial Render
+      renderList(directoryData);
+    </script>
+  </body>
 </html>
