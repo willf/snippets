@@ -16,6 +16,7 @@ import yaml
 
 
 GITHUB_SOURCE_BASE = "https://github.com/willf/snippets/blob/main"
+GITHUB_RAW_BASE = "https://raw.githubusercontent.com/willf/snippets/main"
 PYTHON_SCRIPTS_MANIFEST = "python_scripts.yaml"
 
 
@@ -328,6 +329,12 @@ def generate_index_html(snippets, python_scripts, output_file="index.html"):
             text-transform: uppercase;
         }}
 
+        .resource-intro {{
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin: -6px 0 8px;
+        }}
+
         .scripts-list {{
             display: grid;
             gap: 0 28px;
@@ -355,6 +362,40 @@ def generate_index_html(snippets, python_scripts, output_file="index.html"):
             color: var(--muted);
             font-size: 0.82rem;
             margin-top: 6px;
+        }}
+
+        .script-command {{
+            background: #f1ede4;
+            color: var(--teal);
+            flex: 1;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 0.72rem;
+            overflow-x: auto;
+            padding: 8px 10px;
+            white-space: nowrap;
+        }}
+
+        .command-row {{
+            align-items: stretch;
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+        }}
+
+        .copy-button {{
+            background: var(--teal);
+            border: 0;
+            color: var(--surface);
+            cursor: pointer;
+            font: 700 0.68rem 'Avenir Next', Avenir, 'Helvetica Neue', sans-serif;
+            letter-spacing: 0.04em;
+            padding: 0 12px;
+            transition: background 0.2s ease;
+        }}
+
+        .copy-button:hover,
+        .copy-button:focus-visible {{
+            background: var(--ink);
         }}
 
         .empty-state {{
@@ -449,6 +490,32 @@ def generate_index_html(snippets, python_scripts, output_file="index.html"):
             <p>Generated on {timestamp} | <a href="https://github.com/willf/snippets" target="_blank">View on GitHub</a></p>
         </footer>
     </div>
+    <script>
+        async function copyCommand(button) {{
+            const command = button.dataset.command;
+            try {{
+                if (navigator.clipboard) {{
+                    await navigator.clipboard.writeText(command);
+                }} else {{
+                    const textarea = document.createElement('textarea');
+                    textarea.value = command;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    textarea.remove();
+                }}
+                const originalLabel = button.textContent;
+                button.textContent = 'Copied';
+                setTimeout(() => {{ button.textContent = originalLabel; }}, 1400);
+            }} catch (error) {{
+                button.textContent = 'Select manually';
+            }}
+        }}
+
+        document.querySelectorAll('.copy-button').forEach((button) => {{
+            button.addEventListener('click', () => copyCommand(button));
+        }});
+    </script>
 </body>
 </html>
 """
@@ -483,10 +550,12 @@ def generate_index_html(snippets, python_scripts, output_file="index.html"):
                     <h2>Python scripts</h2>
                     <p>{len(python_scripts)} source files</p>
                 </div>
+                <p class="resource-intro">Run any script directly from the command line with <code>uv</code>; its inline metadata supplies the dependencies.</p>
                 <ul class="scripts-list">
 """
     for filename, description in python_scripts:
         source_url = f"{GITHUB_SOURCE_BASE}/{filename}"
+        raw_url = f"{GITHUB_RAW_BASE}/{filename}"
         python_scripts_html += (
             '                    <li class="script-item">\n'
             f'                        <a href="{source_url}" target="_blank" rel="noopener">'
@@ -494,6 +563,15 @@ def generate_index_html(snippets, python_scripts, output_file="index.html"):
         )
         if description:
             python_scripts_html += f'                        <p class="script-description">{escape(description)}</p>\n'
+        command = f"uv run {raw_url}"
+        python_scripts_html += (
+            '                        <div class="command-row">\n'
+            f'                            <code class="script-command">{escape(command)}</code>\n'
+            f'                            <button class="copy-button" type="button" '
+            f'aria-label="Copy command for {escape(filename)}" '
+            f'data-command="{escape(command)}">Copy</button>\n'
+            "                        </div>\n"
+        )
         python_scripts_html += "                    </li>\n"
     python_scripts_html += "                </ul>\n            </section>"
 

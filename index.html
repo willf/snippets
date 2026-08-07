@@ -194,6 +194,12 @@
             text-transform: uppercase;
         }
 
+        .resource-intro {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin: -6px 0 8px;
+        }
+
         .scripts-list {
             display: grid;
             gap: 0 28px;
@@ -221,6 +227,40 @@
             color: var(--muted);
             font-size: 0.82rem;
             margin-top: 6px;
+        }
+
+        .script-command {
+            background: #f1ede4;
+            color: var(--teal);
+            flex: 1;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 0.72rem;
+            overflow-x: auto;
+            padding: 8px 10px;
+            white-space: nowrap;
+        }
+
+        .command-row {
+            align-items: stretch;
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .copy-button {
+            background: var(--teal);
+            border: 0;
+            color: var(--surface);
+            cursor: pointer;
+            font: 700 0.68rem 'Avenir Next', Avenir, 'Helvetica Neue', sans-serif;
+            letter-spacing: 0.04em;
+            padding: 0 12px;
+            transition: background 0.2s ease;
+        }
+
+        .copy-button:hover,
+        .copy-button:focus-visible {
+            background: var(--ink);
         }
 
         .empty-state {
@@ -385,66 +425,145 @@
                     <h2>Python scripts</h2>
                     <p>13 source files</p>
                 </div>
+                <p class="resource-intro">Run any script directly from the command line with <code>uv</code>; its inline metadata supplies the dependencies.</p>
                 <ul class="scripts-list">
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/combine_docs.py" target="_blank" rel="noopener">combine_docs.py</a>
                         <p class="script-description">Combine sequential Markdown files and add page markers.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/combine_docs.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for combine_docs.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/combine_docs.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/configure_sbl_greek_font.py" target="_blank" rel="noopener">configure_sbl_greek_font.py</a>
                         <p class="script-description">Configure the SBL Greek font for local text and document workflows.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/configure_sbl_greek_font.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for configure_sbl_greek_font.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/configure_sbl_greek_font.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/find_dupes.py" target="_blank" rel="noopener">find_dupes.py</a>
                         <p class="script-description">Cluster likely duplicate names from JSONL input and write CSV results.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/find_dupes.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for find_dupes.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/find_dupes.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/generate.py" target="_blank" rel="noopener">generate.py</a>
                         <p class="script-description">Regenerate this index page from the repository&#x27;s HTML snippets and script manifest.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/generate.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for generate.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/generate.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/generate_pdf_from_html_page.py" target="_blank" rel="noopener">generate_pdf_from_html_page.py</a>
                         <p class="script-description">Generate a PDF from a local HTML page.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/generate_pdf_from_html_page.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for generate_pdf_from_html_page.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/generate_pdf_from_html_page.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/get_songs_by_leader.py" target="_blank" rel="noopener">get_songs_by_leader.py</a>
                         <p class="script-description">Query Sacred Harp song and leader relationships from the minutes database.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/get_songs_by_leader.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for get_songs_by_leader.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/get_songs_by_leader.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/hf_pipe.py" target="_blank" rel="noopener">hf_pipe.py</a>
                         <p class="script-description">Run Hugging Face pipeline experiments from the command line.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/hf_pipe.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for hf_pipe.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/hf_pipe.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/lyrics_to_json.py" target="_blank" rel="noopener">lyrics_to_json.py</a>
                         <p class="script-description">Merge song metadata and text files into JSONL output.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/lyrics_to_json.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for lyrics_to_json.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/lyrics_to_json.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/scrape_fasola_minutes.py" target="_blank" rel="noopener">scrape_fasola_minutes.py</a>
                         <p class="script-description">Scrape Fasola minutes pages and write CSV summaries.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/scrape_fasola_minutes.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for scrape_fasola_minutes.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/scrape_fasola_minutes.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/similar_by_cluster.py" target="_blank" rel="noopener">similar_by_cluster.py</a>
                         <p class="script-description">Find similar records using cluster-based comparisons.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/similar_by_cluster.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for similar_by_cluster.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/similar_by_cluster.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/sqlite_to_jsonl.py" target="_blank" rel="noopener">sqlite_to_jsonl.py</a>
                         <p class="script-description">Export rows from the minutes database as JSONL.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/sqlite_to_jsonl.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for sqlite_to_jsonl.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/sqlite_to_jsonl.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/upload_hf_images.py" target="_blank" rel="noopener">upload_hf_images.py</a>
                         <p class="script-description">Upload a local image folder as a Hugging Face dataset.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/upload_hf_images.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for upload_hf_images.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/upload_hf_images.py">Copy</button>
+                        </div>
                     </li>
                     <li class="script-item">
                         <a href="https://github.com/willf/snippets/blob/main/ytplaylist_to_md.py" target="_blank" rel="noopener">ytplaylist_to_md.py</a>
                         <p class="script-description">Turn a YouTube playlist into tab-separated Markdown-like output.</p>
+                        <div class="command-row">
+                            <code class="script-command">uv run https://raw.githubusercontent.com/willf/snippets/main/ytplaylist_to_md.py</code>
+                            <button class="copy-button" type="button" aria-label="Copy command for ytplaylist_to_md.py" data-command="uv run https://raw.githubusercontent.com/willf/snippets/main/ytplaylist_to_md.py">Copy</button>
+                        </div>
                     </li>
                 </ul>
             </section>
         </div>
 
         <footer>
-            <p>Generated on 2026-08-07 10:24:12 | <a href="https://github.com/willf/snippets" target="_blank">View on GitHub</a></p>
+            <p>Generated on 2026-08-07 10:56:58 | <a href="https://github.com/willf/snippets" target="_blank">View on GitHub</a></p>
         </footer>
     </div>
+    <script>
+        async function copyCommand(button) {
+            const command = button.dataset.command;
+            try {
+                if (navigator.clipboard) {
+                    await navigator.clipboard.writeText(command);
+                } else {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = command;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    textarea.remove();
+                }
+                const originalLabel = button.textContent;
+                button.textContent = 'Copied';
+                setTimeout(() => { button.textContent = originalLabel; }, 1400);
+            } catch (error) {
+                button.textContent = 'Select manually';
+            }
+        }
+
+        document.querySelectorAll('.copy-button').forEach((button) => {
+            button.addEventListener('click', () => copyCommand(button));
+        });
+    </script>
 </body>
 </html>
