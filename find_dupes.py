@@ -5,10 +5,19 @@
 # ]
 # ///
 
+## To use this script:
+## 1. sqlite3 -noheader minutes.db \  "SELECT json_object('id', leaders.id, 'name', leaders.name, 'count', COUNT(song_leader_joins.id)) FROM leaders LEFT JOIN song_leader_joins ON song_leader_joins.leader_id = leaders.id GROUP BY leaders.id, leaders.name;" > /tmp/names.jsonl
+## 2. cat /tmp/names.jsonl| uv run find_dupes.py | sort -n >/tmp/dupes.csv
+## 3.
+
 import sys
 import json
 import csv
 import rapidfuzz
+
+
+def max(a, b):
+    return a if a > b else b
 
 
 def get_sort_key(item):
@@ -93,9 +102,11 @@ def main():
     except KeyboardInterrupt:
         pass
 
+    sys.stdout.flush()  # Ensure the output is flushed immediately
     # 2. Sort for "Sorted Neighborhood" method
     # We create a list of (original_index, record) tuples
     indexed_records = list(enumerate(records))
+    sys.stdout.flush()  # Ensure the output is flushed immediately
     sorted_records = sorted(indexed_records, key=get_sort_key)
 
     edges = []
@@ -126,7 +137,8 @@ def main():
                     )
                     * 100
                 )
-                score = max(score_0, score_1, score_2)
+                score = max(score_0, score_1)
+                score = max(score, score_2)
 
             if score >= threshold:
                 edges.append((idx_a, idx_b))
@@ -134,28 +146,67 @@ def main():
     # 4. Cluster the Pairs
     cluster_map = solve_connected_components(len(records), edges)
 
+    # Filter out None clusters
+
+    cluster_map = {k: v for k, v in cluster_map.items() if v is not None}
+
+    # put all of the clusters into a list of lists
+    clusters = {}
+    for idx, c_id in cluster_map.items():
+        if c_id not in clusters:
+            clusters[c_id] = []
+        clusters[c_id].append(idx)
+
+    # find the record with the highst count in each cluster and use that as the "corrected" name
+    for c_id, indices in clusters.items():
+        max_count = -1
+        corrected_name = None
+        for idx in indices:
+            record = records[idx]
+            count = record.get("count", 0)
+            if count > max_count:
+                max_count = count
+                corrected_name = record.get("name", "")
+        # Update all records in this cluster with the corrected name
+        for idx in indices:
+            records[idx]["corrected_name"] = corrected_name
+            records[idx]["max_count"] = max_count
+            records[idx]["count"] = records[idx].get(
+                "count", 0
+            )  # Ensure count is present
+            records[idx]["cluster_id"] = c_id
+            records[idx]["uncorrected_name"] = records[idx].get("name", "")
+
+    fieldnames = [
+        "cluster_id",
+        "corrected_name",
+        "uncorrected_name",
+        "count",
+        "max_count",
+    ]
     # 5. Output CSV
-    # We define the columns: Cluster ID, Name, and then any other fields found in the data
-    fieldnames = ["Cluster_ID", "name"]
-
-    # Add other keys from the first record just to be helpful (optional)
-    if records:
-        extra_keys = [k for k in records[0].keys() if k != "name"]
-        fieldnames.extend(extra_keys)
-
     writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
     writer.writeheader()
 
     for idx, record in enumerate(records):
-        c_id = cluster_map.get(idx)
+        # if max_count is less than 10, skip this record
+        if record.get("max_count", 0) < 10:
+            continue
+        # dont print if the corrected name is the same as the uncorrected name
+        if record.get("corrected_name", "") == record.get("uncorrected_name", ""):
+            continue
+        # else print it
 
-        # Only output records that are part of a duplicate cluster
-        if c_id is not None:
-            out_row = {"Cluster_ID": c_id, "name": record["name"]}
-            # Fill in extra data
-            for k in extra_keys:
-                out_row[k] = record.get(k, "")
-            writer.writerow(out_row)
+        writer.writerow(
+            {
+                "cluster_id": record.get("cluster_id", ""),
+                #  "name": record.get("name", ""),
+                "uncorrected_name": record.get("uncorrected_name", ""),
+                "corrected_name": record.get("corrected_name", ""),
+                "count": record.get("count", 0),
+                "max_count": record.get("max_count", 0),
+            }
+        )
 
 
 if __name__ == "__main__":

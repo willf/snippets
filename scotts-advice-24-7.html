@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A page for musicians. Its only advice, 24/7: go practice."
+    />
+    <title>Scott's Advice, 24/7</title>
+    <style>
+      :root {
+        --ink: #202020;
+        --paper: #efe9dc;
+        --signal: #d84b2f;
+        --line: rgba(32, 32, 32, 0.2);
+        --display: "Avenir Next", "Helvetica Neue", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        color: var(--ink);
+        background-color: var(--paper);
+        background-image:
+          linear-gradient(rgba(32, 32, 32, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(32, 32, 32, 0.045) 1px, transparent 1px);
+        background-size: 44px 44px;
+        font-family: var(--display);
+      }
+
+      .page {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        width: min(100% - 48px, 1440px);
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 28px 0 24px;
+      }
+
+      .masthead,
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .masthead {
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .kicker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .mark {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background: var(--signal);
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px rgba(216, 75, 47, 0.14);
+      }
+
+      .edition {
+        color: rgba(32, 32, 32, 0.58);
+      }
+
+      main {
+        display: grid;
+        place-items: center;
+        padding: 48px 0;
+      }
+
+      .message-wrap {
+        width: 100%;
+        text-align: center;
+      }
+
+      .eyebrow {
+        margin: 0 0 28px;
+        color: var(--signal);
+        font-size: clamp(0.72rem, 1.1vw, 0.9rem);
+        font-weight: 700;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 1200px;
+        margin: 0 auto;
+        font-family: var(--display);
+        font-size: clamp(4rem, 15vw, 13rem);
+        font-weight: 800;
+        letter-spacing: -0.07em;
+        line-height: 0.82;
+        text-transform: uppercase;
+        transition:
+          font-family 500ms ease,
+          font-weight 500ms ease,
+          transform 500ms ease;
+      }
+
+      h1.is-changing {
+        transform: scaleX(0.985);
+      }
+
+      .subline {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin: 34px 0 0;
+        color: rgba(32, 32, 32, 0.65);
+        font-size: clamp(0.78rem, 1.3vw, 1rem);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .subline::before,
+      .subline::after {
+        width: clamp(24px, 6vw, 84px);
+        height: 1px;
+        background: var(--line);
+        content: "";
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 42px;
+      }
+
+      button {
+        min-width: 132px;
+        padding: 11px 15px;
+        border: 1px solid var(--ink);
+        border-radius: 0;
+        color: var(--ink);
+        background: transparent;
+        font: inherit;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition:
+          background-color 180ms ease,
+          color 180ms ease;
+      }
+
+      button:hover,
+      button:focus-visible {
+        color: var(--paper);
+        background: var(--ink);
+        outline: none;
+      }
+
+      .footer {
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(32, 32, 32, 0.58);
+      }
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--signal);
+        border-radius: 50%;
+        animation: blink 1.5s steps(2, end) infinite;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0.25;
+        }
+      }
+
+      @media (max-width: 600px) {
+        body {
+          background-size: 30px 30px;
+        }
+
+        .page {
+          width: min(100% - 32px, 1440px);
+          padding: 18px 0;
+        }
+
+        .masthead,
+        .footer {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        main {
+          padding: 36px 0;
+        }
+
+        h1 {
+          font-size: clamp(4rem, 21vw, 8rem);
+          letter-spacing: -0.08em;
+        }
+
+        .subline {
+          margin-top: 26px;
+          line-height: 1.5;
+        }
+
+        .controls {
+          margin-top: 32px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead">
+        <div class="kicker">
+          <span class="mark"></span> Advice for musicians
+        </div>
+        <div class="edition">The 24/7 edition</div>
+      </header>
+
+      <main>
+        <section class="message-wrap" aria-labelledby="practice-message">
+          <p class="eyebrow">Scott says</p>
+          <h1 id="practice-message">Go<br />practice!</h1>
+          <p class="subline">All day &nbsp; / &nbsp; every day</p>
+          <div class="controls" aria-label="Page controls">
+            <button id="type-button" type="button">Change type</button>
+            <button id="pause-button" type="button" aria-pressed="false">
+              Pause clock
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>For players, singers, and the stubbornly hopeful.</p>
+        <p class="status">
+          <span class="status-dot"></span
+          ><span id="status-text">The advice is active</span>
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      const typefaces = [
+        ['"Avenir Next", "Helvetica Neue", sans-serif', "800"],
+        ['Didot, "Bodoni 72", Georgia, serif', "700"],
+        ['Rockwell, "Courier New", monospace', "700"],
+        ['"Marker Felt", "Bradley Hand", cursive', "500"],
+        ['Futura, "Century Gothic", sans-serif', "700"],
+      ];
+      const message = document.querySelector("#practice-message");
+      const typeButton = document.querySelector("#type-button");
+      const pauseButton = document.querySelector("#pause-button");
+      const statusText = document.querySelector("#status-text");
+      let typeIndex = 0;
+      let isPaused = false;
+
+      function changeType() {
+        typeIndex = (typeIndex + 1) % typefaces.length;
+        const [fontFamily, fontWeight] = typefaces[typeIndex];
+        message.classList.add("is-changing");
+        window.setTimeout(() => {
+          message.style.setProperty("--display", fontFamily);
+          message.style.fontFamily = fontFamily;
+          message.style.fontWeight = fontWeight;
+          message.classList.remove("is-changing");
+        }, 180);
+      }
+
+      typeButton.addEventListener("click", changeType);
+      pauseButton.addEventListener("click", () => {
+        isPaused = !isPaused;
+        pauseButton.setAttribute("aria-pressed", String(isPaused));
+        pauseButton.textContent = isPaused ? "Resume clock" : "Pause clock";
+        statusText.textContent = isPaused
+          ? "The advice is paused"
+          : "The advice is active";
+        document.querySelector(".status-dot").style.animationPlayState =
+          isPaused ? "paused" : "running";
+      });
+
+      window.setInterval(() => {
+        if (!isPaused) changeType();
+      }, 24000);
+    </script>
+  </body>
+</html>
